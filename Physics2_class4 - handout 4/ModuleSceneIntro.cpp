@@ -28,14 +28,14 @@ bool ModuleSceneIntro::Start()
 
 	// Creation of the pinball board
 	int Pinball_box[20] = {
-		170, 342,
+		170, 352, // Palanca 1
 		51, 273,
 		0, 193,
 		371, 0,
 		466, 29,
 		416, 96,
 		384, 286,
-		300, 352,
+		300, 352, //Palanca 2
 		300, 390,
 		170, 390
 
@@ -47,6 +47,31 @@ bool ModuleSceneIntro::Start()
 	}
 
 	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody));
+
+
+	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 150, 25));
+
+	//boxes.add(App->physics->CreateRectangle(0, 0, 150, 25));
+
+	b2RevoluteJointDef first_joint;
+
+	PhysBody* bodyA;
+	PhysBody* bodyB;
+
+	boxes.at(0, bodyA);
+	chains.at(0, bodyB);
+
+	first_joint.bodyA = bodyA->body; //Pala
+	first_joint.bodyB = bodyB->body; //Tablero
+	first_joint.collideConnected = false;
+	first_joint.localAnchorA.Set(PIXEL_TO_METERS(-50), PIXEL_TO_METERS(0));
+	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS(352* 2.5));
+	first_joint.enableLimit = true;
+	first_joint.lowerAngle = -30 * DEGTORAD;
+	first_joint.upperAngle = 30 * DEGTORAD;
+
+	App->physics->world->CreateJoint(&first_joint);
+
 
 	return ret;
 }
@@ -77,7 +102,7 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
+		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 150, 25));
 	}
 
 	// Prepare for raycast ------------------------------------------------------
