@@ -51,18 +51,21 @@ bool ModuleSceneIntro::Start()
 
 	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 150, 25));
 
-	//boxes.add(App->physics->CreateRectangle(0, 0, 150, 25));
+	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 150, 25));
 
 	b2RevoluteJointDef first_joint;
+	b2RevoluteJointDef second_joint;
 
 	PhysBody* bodyA;
 	PhysBody* bodyB;
+	PhysBody* bodyC;
 
-	boxes.at(0, bodyA);
-	chains.at(0, bodyB);
-
-	first_joint.bodyA = bodyA->body; //Pala
-	first_joint.bodyB = bodyB->body; //Tablero
+	chains.at(0, bodyA);
+	boxes.at(0, bodyB);
+	boxes.at(0, bodyC);
+	
+	first_joint.bodyA = bodyB->body; // Pala
+	first_joint.bodyB = bodyA->body; // Tablero
 	first_joint.collideConnected = false;
 	first_joint.localAnchorA.Set(PIXEL_TO_METERS(-50), PIXEL_TO_METERS(0));
 	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS(352* 2.5));
@@ -70,7 +73,17 @@ bool ModuleSceneIntro::Start()
 	first_joint.lowerAngle = -30 * DEGTORAD;
 	first_joint.upperAngle = 30 * DEGTORAD;
 
+	second_joint.bodyA = bodyC->body; // Pala
+	second_joint.bodyB = bodyA->body; // Tablero
+	second_joint.collideConnected = false;
+	second_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
+	second_joint.localAnchorB.Set(PIXEL_TO_METERS(300 * 2.5), PIXEL_TO_METERS(352 * 2.5));
+	second_joint.enableLimit = true;
+	second_joint.lowerAngle = -30 * DEGTORAD;
+	second_joint.upperAngle = 30 * DEGTORAD;
+
 	App->physics->world->CreateJoint(&first_joint);
+	App->physics->world->CreateJoint(&second_joint);
 
 
 	return ret;
