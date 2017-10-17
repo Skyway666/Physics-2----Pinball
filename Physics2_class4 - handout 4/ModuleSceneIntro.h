@@ -22,6 +22,10 @@ public:
 	p2List<PhysBody*> boxes;
 	p2List<PhysBody*> chains;
 
+	PhysBody* bodyA;
+	PhysBody* bodyB;
+	PhysBody* bodyC;
+
 	PhysBody* sensor;
 	bool sensed;
 

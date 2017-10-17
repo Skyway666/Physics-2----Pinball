@@ -56,13 +56,9 @@ bool ModuleSceneIntro::Start()
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
 
-	PhysBody* bodyA;
-	PhysBody* bodyB;
-	PhysBody* bodyC;
-
 	chains.at(0, bodyA);
 	boxes.at(0, bodyB);
-	boxes.at(0, bodyC);
+	boxes.at(1, bodyC);
 	
 	first_joint.bodyA = bodyB->body; // Pala
 	first_joint.bodyB = bodyA->body; // Tablero
@@ -84,7 +80,6 @@ bool ModuleSceneIntro::Start()
 
 	App->physics->world->CreateJoint(&first_joint);
 	App->physics->world->CreateJoint(&second_joint);
-
 
 	return ret;
 }
@@ -117,6 +112,12 @@ update_status ModuleSceneIntro::Update()
 	{
 		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 150, 25));
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		bodyB->body->ApplyForce(b2Vec2(0, 100), b2Vec2(50, 0), false);
+
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		bodyC->body->ApplyForce(b2Vec2(0, 100), b2Vec2(50, 0), false);
 
 	// Prepare for raycast ------------------------------------------------------
 	
