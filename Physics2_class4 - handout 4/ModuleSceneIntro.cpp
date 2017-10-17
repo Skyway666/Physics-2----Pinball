@@ -48,10 +48,9 @@ bool ModuleSceneIntro::Start()
 
 	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody));
 
+	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 150, 35));
 
-	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 150, 25));
-
-	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 150, 25));
+	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 150, 35));
 
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -114,10 +113,10 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		bodyB->body->ApplyForce(b2Vec2(0, -200), b2Vec2(50, 0), true);
+		bodyB->body->ApplyForce(b2Vec2(0, -500), b2Vec2(50, 0), true);
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		bodyC->body->ApplyForce(b2Vec2(0, 200), b2Vec2(50, 0), true);
+		bodyC->body->ApplyForce(b2Vec2(0, 500), b2Vec2(50, 0), true);
 
 	// Prepare for raycast ------------------------------------------------------
 	
