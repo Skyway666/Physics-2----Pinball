@@ -26,21 +26,27 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
-	sensor = App->physics->CreateRectangleSensor(SCREEN_WIDTH / 2, SCREEN_HEIGHT, SCREEN_WIDTH, 50);
-
 	// Creation of the pinball board
-	int Pinball_box[14] = {
-		393,853,
-		25,403,
-		815,13,
-		1093,587,
-		803,857,
-		795,959,
-		393,959
+	int Pinball_box[20] = {
+		170, 342,
+		51, 273,
+		0, 193,
+		371, 0,
+		466, 29,
+		416, 96,
+		384, 286,
+		300, 352,
+		300, 390,
+		170, 390
 
 	};
 
-	chains.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), Pinball_box, 14, b2_staticBody));
+	for (int i = 0; i != 20; i++)
+	{
+		Pinball_box[i] = Pinball_box[i] * 2.5;
+	}
+
+	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody));
 
 	return ret;
 }
@@ -72,23 +78,6 @@ update_status ModuleSceneIntro::Update()
 	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
 	{
 		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 100, 50));
-	}
-
-	if(App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-	{
-		// Pivot 0, 0
-		int Pinball_box[14] = {
-		   393,853,
-		   25,403,
-		   815,13,
-		   1093,587,
-		   803,857,
-		   795,959,
-		   393,959
-
-		};
-
-		chains.add(App->physics->CreateChain(App->input->GetMouseX(), App->input->GetMouseY(), Pinball_box, 14, b2_staticBody));
 	}
 
 	// Prepare for raycast ------------------------------------------------------
