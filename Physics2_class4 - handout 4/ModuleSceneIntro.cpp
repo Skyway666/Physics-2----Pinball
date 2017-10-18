@@ -113,10 +113,10 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		bodyB->body->ApplyForce(b2Vec2(0, -500), b2Vec2(50, 0), true);
+		bodyB->body->ApplyForce(b2Vec2(0, -50), b2Vec2(50, 0), true);
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		bodyC->body->ApplyForce(b2Vec2(0, 500), b2Vec2(50, 0), true);
+		bodyC->body->ApplyForce(b2Vec2(0, 50), b2Vec2(50, 0), true);
 
 	// Prepare for raycast ------------------------------------------------------
 	
