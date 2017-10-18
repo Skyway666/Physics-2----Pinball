@@ -48,9 +48,9 @@ bool ModuleSceneIntro::Start()
 
 	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody));
 
-	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 150, 35));
+	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 180, 35));
 
-	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 150, 35));
+	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 180, 35));
 
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -103,7 +103,7 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true));
 		circles.getLast()->data->listener = this;
 	}
 
@@ -113,10 +113,14 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		bodyB->body->ApplyForce(b2Vec2(0, -500), b2Vec2(50, 0), true);
+		bodyB->body->ApplyAngularImpulse(-80, true);
+	else
+		bodyB->body->ApplyAngularImpulse(1, true);
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		bodyC->body->ApplyForce(b2Vec2(0, 500), b2Vec2(50, 0), true);
+		bodyC->body->ApplyAngularImpulse(80, true);
+	else
+		bodyC->body->ApplyAngularImpulse(-1, true);
 
 	// Prepare for raycast ------------------------------------------------------
 	
