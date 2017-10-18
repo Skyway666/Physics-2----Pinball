@@ -134,7 +134,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2BodyType type)
+PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2BodyType type, bool open_chain)
 {
 	b2BodyDef body;
 	body.type = type;
@@ -151,7 +151,15 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 		p[i].y = PIXEL_TO_METERS(points[i * 2 + 1]);
 	}
 
-	shape.CreateLoop(p, size / 2);
+	if (open_chain)
+	{
+	    shape.CreateChain(p, size / 2);
+	}
+	else
+	{
+        shape.CreateLoop(p, size / 2);
+	}
+	 //Create chain for open shape
 
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
@@ -162,6 +170,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
+	pbody->open_chain = open_chain;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
 
@@ -179,6 +188,8 @@ update_status ModulePhysics::PostUpdate()
 
 	b2Body* found_body = nullptr;
 	b2Vec2 p(PIXEL_TO_METERS(App->input->GetMouseX()), PIXEL_TO_METERS(App->input->GetMouseY()));
+
+
 	// Bonus code: this will iterate all objects in the world and draw the circles
 	// You need to provide your own macro to translate meters to pixels
 	for(b2Body* b = world->GetBodyList(); b; b = b->GetNext())
@@ -231,8 +242,14 @@ update_status ModulePhysics::PostUpdate()
 						prev = v;
 					}
 
-					v = b->GetWorldPoint(shape->m_vertices[0]);
-					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+					PhysBody* chain_data;
+
+					chain_data = (PhysBody*)b->GetUserData();
+					if (!chain_data->open_chain)
+					{ 
+						v = b->GetWorldPoint(shape->m_vertices[0]);
+						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+					}
 				}
 				break;
 

@@ -46,7 +46,7 @@ bool ModuleSceneIntro::Start()
 		Pinball_box[i] = Pinball_box[i] * 2.5;
 	}
 
-	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody));
+	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody,true));
 
 	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 180, 35));
 
