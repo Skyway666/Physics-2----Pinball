@@ -11,6 +11,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 {
 	ray_on = false;
 	sensed = false;
+	allow_throw = false;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -105,10 +106,17 @@ bool ModuleSceneIntro::Start()
 	App->physics->world->CreateJoint(&first_joint);
 	App->physics->world->CreateJoint(&second_joint);
 
+	//Set up sensors 416, 286,
+	ball_throw = App->physics->CreateRectangleSensor(428 * 2.5, (286 * 2.5), 90, 35);
+	ball_throw->listener = this;
+
+
+	//Set up first ball
+
+	circles.add(App->physics->CreateCircle(1078, 653, 18, true));
+	circles.getLast()->data->listener = this;
+
 	return ret;
-
-	//Set up sensors
-
 }
 
 // Load assets
@@ -129,11 +137,11 @@ update_status ModuleSceneIntro::Update()
 		ray.y = App->input->GetMouseY();
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 18, true));
-		circles.getLast()->data->listener = this;
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+	{ 
+		circles.getLast()->data->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1078), PIXEL_TO_METERS(653)), 0);
 	}
+
 
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		Lflipper->body->ApplyAngularImpulse(-80, true);
@@ -145,6 +153,14 @@ update_status ModuleSceneIntro::Update()
 	else
 		Rflipper->body->ApplyAngularImpulse(-1, true);
 
+
+	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	{
+		PhysBody* tmp_body;
+		circles.at(0, tmp_body);
+		tmp_body->body->ApplyForceToCenter(b2Vec2(0, 10000), true);
+	}
+	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
 	
 	iPoint mouse;
@@ -158,22 +174,16 @@ update_status ModuleSceneIntro::Update()
 	return UPDATE_CONTINUE;
 }
 
+//If there is just one sensor, body a is the sensor
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
 	int x, y;
 
-	App->audio->PlayFx(bonus_fx);
+	//App->audio->PlayFx(bonus_fx);
 
-
-	if(bodyA)
+	if (bodyA->body->GetFixtureList()->IsSensor()) //An special value has to be added to physbody to differenciate sensors
 	{
-		bodyA->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
+		allow_throw = true;
 	}
 
-	if(bodyB)
-	{
-		bodyB->GetPosition(x, y);
-		App->renderer->DrawCircle(x, y, 50, 100, 100, 100);
-	}
 }

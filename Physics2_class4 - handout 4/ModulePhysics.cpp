@@ -48,7 +48,7 @@ update_status ModulePhysics::PreUpdate()
 		if(c->GetFixtureA()->IsSensor() && c->IsTouching())
 		{
 			PhysBody* pb1 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
-			PhysBody* pb2 = (PhysBody*)c->GetFixtureA()->GetBody()->GetUserData();
+			PhysBody* pb2 = (PhysBody*)c->GetFixtureB()->GetBody()->GetUserData();
 			if(pb1 && pb2 && pb1->listener)
 				pb1->listener->OnCollision(pb1, pb2);
 		}
@@ -127,6 +127,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
+	//pbody->listener = (Module*)App->scene_intro;
 	b->SetUserData(pbody);
 	pbody->width = width;
 	pbody->height = height;
@@ -214,17 +215,31 @@ update_status ModulePhysics::PostUpdate()
 					int32 count = polygonShape->GetVertexCount();
 					b2Vec2 prev, v;
 
-					for(int32 i = 0; i < count; ++i)
-					{
-						v = b->GetWorldPoint(polygonShape->GetVertex(i));
-						if(i > 0)
-							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+					//Dynamic bodies will be non filled rectangles
+					if (!f->IsSensor())
+					{ 
+						for(int32 i = 0; i < count; ++i)
+						{
+							v = b->GetWorldPoint(polygonShape->GetVertex(i));
+							if(i > 0)
+								App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 
-						prev = v;
+							prev = v;
+						}
+
+						v = b->GetWorldPoint(polygonShape->GetVertex(0));
+						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 					}
-
-					v = b->GetWorldPoint(polygonShape->GetVertex(0));
-					App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+					//Sensors will be filled rectangles
+					else
+					{
+						PhysBody* b_data = (PhysBody*)b->GetUserData();
+						SDL_Rect drawing_rect;
+						b_data->GetPosition(drawing_rect.x, drawing_rect.y);
+						drawing_rect.w = b_data->width;
+						drawing_rect.h = b_data->height;
+						App->renderer->DrawQuad(drawing_rect, 0, 255, 0,150);
+					}
 				}
 				break;
 
@@ -281,10 +296,6 @@ update_status ModulePhysics::PostUpdate()
 					}
 					fixture = fixture->GetNext();
 				}
-
-					/*PhysBody* body = (PhysBody*)b->GetUserData();*/
-				//if (body != nullptr)
-				//body->Contains(App->input->GetMouseX(), App->input->GetMouseY());
 			}
 			// test if the current body contains mouse position
 		}
@@ -341,8 +352,8 @@ bool ModulePhysics::CleanUp()
 void PhysBody::GetPosition(int& x, int &y) const
 {
 	b2Vec2 pos = body->GetPosition();
-	x = METERS_TO_PIXELS(pos.x) - (width);
-	y = METERS_TO_PIXELS(pos.y) - (height);
+	x = METERS_TO_PIXELS(pos.x) - (width/2);
+	y = METERS_TO_PIXELS(pos.y) - (height/2);
 }
 
 float PhysBody::GetRotation() const

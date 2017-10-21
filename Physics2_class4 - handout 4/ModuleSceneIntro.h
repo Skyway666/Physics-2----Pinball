@@ -33,6 +33,9 @@ public:
 	//Pinball sensors
 	PhysBody* ball_throw;
 
+	//Bools to controls cositas
+	bool allow_throw;
+
 
 	bool sensed;
 
