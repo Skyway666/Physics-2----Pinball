@@ -28,14 +28,14 @@ bool ModuleSceneIntro::Start()
 
 	// Creation of the pinball board
 	int Pinball_box[20] = {
-		170, 352, // Palanca 1
+		170, 342, // Palanca 1
 		51, 273,
 		0, 193,
 		371, 0,
 		466, 29,
 		416, 96,
 		384, 286,
-		300, 352, //Palanca 2
+		300, 342, //Palanca 2
 		300, 390,
 		170, 390
 
@@ -46,11 +46,11 @@ bool ModuleSceneIntro::Start()
 		Pinball_box[i] = Pinball_box[i] * 2.5;
 	}
 
-	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody,true));
+	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody,false));
 
-	boxes.add(App->physics->CreateRectangle(170 * 2.5, 352 * 2.5, 180, 35));
+	boxes.add(App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35));
 
-	boxes.add(App->physics->CreateRectangle(300 * 2.5, 352 * 2.5, 180, 35));
+	boxes.add(App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35));
 
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -63,7 +63,7 @@ bool ModuleSceneIntro::Start()
 	first_joint.bodyB = bodyA->body; // Tablero
 	first_joint.collideConnected = false;
 	first_joint.localAnchorA.Set(PIXEL_TO_METERS(-50), PIXEL_TO_METERS(0));
-	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS(352* 2.5));
+	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS((352* 2.5)));
 	first_joint.enableLimit = true;
 	first_joint.lowerAngle = -30 * DEGTORAD;
 	first_joint.upperAngle = 30 * DEGTORAD;
@@ -72,7 +72,7 @@ bool ModuleSceneIntro::Start()
 	second_joint.bodyB = bodyA->body; // Tablero
 	second_joint.collideConnected = false;
 	second_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
-	second_joint.localAnchorB.Set(PIXEL_TO_METERS(300 * 2.5), PIXEL_TO_METERS(352 * 2.5));
+	second_joint.localAnchorB.Set(PIXEL_TO_METERS(300 * 2.5), PIXEL_TO_METERS((352 * 2.5)));
 	second_joint.enableLimit = true;
 	second_joint.lowerAngle = -30 * DEGTORAD;
 	second_joint.upperAngle = 30 * DEGTORAD;
