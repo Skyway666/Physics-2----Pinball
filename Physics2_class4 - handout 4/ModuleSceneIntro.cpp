@@ -47,10 +47,10 @@ bool ModuleSceneIntro::Start()
 
 	int Pinball_ball_throw[14] = {
 		416, 30,
-		435, 150,
+		455, 150,
 		416, 286,
 		435, 286,
-		454, 150,
+		474, 150,
 		435,0,
 		371,0
 	};
@@ -130,6 +130,10 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
+	//Ball should allways have 0 inclination
+
+	circles.getLast()->data->body->SetTransform(b2Vec2(circles.getLast()->data->body->GetPosition().x, circles.getLast()->data->body->GetPosition().y), 0);
+
 	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ray_on = !ray_on;
@@ -140,6 +144,7 @@ update_status ModuleSceneIntro::Update()
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ 
 		circles.getLast()->data->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1078), PIXEL_TO_METERS(653)), 0);
+		circles.getLast()->data->body->SetLinearVelocity(b2Vec2(0, 0));
 	}
 
 
