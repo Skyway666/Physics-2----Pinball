@@ -26,41 +26,66 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
-	// Creation of the pinball board
-	int Pinball_box[20] = {
+	// Creation of the pinball board body
+	int Pinball_box_1[10] = {
+		170, 390,
 		170, 342, // Palanca 1
 		51, 273,
 		0, 193,
 		371, 0,
-		466, 29,
-		416, 96,
+	
+
+	};	
+	
+	int Pinball_box_2[8] = {
+		416, 30,
 		384, 286,
 		300, 342, //Palanca 2
 		300, 390,
-		170, 390
-
 	};
 
-	for (int i = 0; i != 20; i++)
+	int Pinball_ball_throw[14] = {
+		416, 30,
+		435, 150,
+		416, 286,
+		435, 286,
+		454, 150,
+		435,0,
+		371,0
+	};
+
+	for (int i = 0; i != 10; i++)
 	{
-		Pinball_box[i] = Pinball_box[i] * 2.5;
+		Pinball_box_1[i] = Pinball_box_1[i] * 2.5;
+	}
+	
+	for (int i = 0; i != 8; i++)
+	{
+		Pinball_box_2[i] = Pinball_box_2[i] * 2.5;
 	}
 
-	chains.add(App->physics->CreateChain(0, 0, Pinball_box, 20, b2_staticBody,false));
+	for (int i = 0; i != 14; i++)
+	{
+		Pinball_ball_throw[i] = Pinball_ball_throw[i] * 2.5;
+	}
 
-	boxes.add(App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35));
 
-	boxes.add(App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35));
+	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody,true);
+
+	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody, true);
+
+	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 14, b2_staticBody, true);
+
+	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35);
+
+	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35);
 
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
-
-	chains.at(0, bodyA);
-	boxes.at(0, bodyB);
-	boxes.at(1, bodyC);
 	
-	first_joint.bodyA = bodyB->body; // Pala
-	first_joint.bodyB = bodyA->body; // Tablero
+
+	first_joint.bodyA = Lflipper->body; // Pala
+	first_joint.bodyB = Lpinball->body; // Tablero
 	first_joint.collideConnected = false;
 	first_joint.localAnchorA.Set(PIXEL_TO_METERS(-50), PIXEL_TO_METERS(0));
 	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS((352* 2.5)));
@@ -68,8 +93,8 @@ bool ModuleSceneIntro::Start()
 	first_joint.lowerAngle = -30 * DEGTORAD;
 	first_joint.upperAngle = 30 * DEGTORAD;
 
-	second_joint.bodyA = bodyC->body; // Pala
-	second_joint.bodyB = bodyA->body; // Tablero
+	second_joint.bodyA = Rflipper->body; // Pala
+	second_joint.bodyB = Rpinball->body; // Tablero
 	second_joint.collideConnected = false;
 	second_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
 	second_joint.localAnchorB.Set(PIXEL_TO_METERS(300 * 2.5), PIXEL_TO_METERS((352 * 2.5)));
@@ -81,6 +106,9 @@ bool ModuleSceneIntro::Start()
 	App->physics->world->CreateJoint(&second_joint);
 
 	return ret;
+
+	//Set up sensors
+
 }
 
 // Load assets
@@ -103,24 +131,19 @@ update_status ModuleSceneIntro::Update()
 
 	if(App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{
-		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 25, true));
+		circles.add(App->physics->CreateCircle(App->input->GetMouseX(), App->input->GetMouseY(), 18, true));
 		circles.getLast()->data->listener = this;
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
-	{
-		boxes.add(App->physics->CreateRectangle(App->input->GetMouseX(), App->input->GetMouseY(), 150, 25));
-	}
-
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		bodyB->body->ApplyAngularImpulse(-80, true);
+		Lflipper->body->ApplyAngularImpulse(-80, true);
 	else
-		bodyB->body->ApplyAngularImpulse(1, true);
+		Lflipper->body->ApplyAngularImpulse(1, true);
 
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-		bodyC->body->ApplyAngularImpulse(80, true);
+		Rflipper->body->ApplyAngularImpulse(80, true);
 	else
-		bodyC->body->ApplyAngularImpulse(-1, true);
+		Rflipper->body->ApplyAngularImpulse(-1, true);
 
 	// Prepare for raycast ------------------------------------------------------
 	

@@ -18,15 +18,22 @@ public:
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
 
 public:
+
+
 	p2List<PhysBody*> circles;
-	p2List<PhysBody*> boxes;
-	p2List<PhysBody*> chains;
 
-	PhysBody* bodyA;
-	PhysBody* bodyB;
-	PhysBody* bodyC;
 
-	PhysBody* sensor;
+	// Pinball bodies
+	PhysBody* Lpinball;
+	PhysBody* Rpinball;
+	PhysBody* Bpinball;
+	PhysBody* Lflipper;
+	PhysBody* Rflipper;
+
+	//Pinball sensors
+	PhysBody* ball_throw;
+
+
 	bool sensed;
 
 	uint bonus_fx;
