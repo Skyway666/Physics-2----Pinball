@@ -56,10 +56,10 @@ bool ModuleSceneIntro::Start()
 	};
 
 	int Wall[8] = {
-		415, 0,
-		415, 100,
-		420, 100,
-		420, 0,
+		416, 0,
+		416, 100,
+		430, 100,
+		430, 0,
 	};
 
 
@@ -134,7 +134,7 @@ bool ModuleSceneIntro::Start()
 	ball_throw->listener = this;
 
 
-	wall_sensor = App->physics->CreateRectangleSensor(410 * 2.5, (30 * 2.5), 10, 300, 1);
+	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 1);
 	wall_sensor->listener = this;
 
 	//Set up first ball
