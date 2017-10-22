@@ -140,7 +140,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 {
 	b2BodyDef body;
 	body.type = type;
-	body.position.Set(0, 0);
+	body.position.Set(x, y);
 
 	b2Body* b = world->CreateBody(&body);
 

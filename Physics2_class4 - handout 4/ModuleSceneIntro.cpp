@@ -55,6 +55,14 @@ bool ModuleSceneIntro::Start()
 		371,0
 	};
 
+	int Wall[8] = {
+		415, 0,
+		415, 100,
+		420, 100,
+		420, 0,
+	};
+
+
 	for (int i = 0; i != 10; i++)
 	{
 		Pinball_box_1[i] = Pinball_box_1[i] * 2.5;
@@ -71,6 +79,11 @@ bool ModuleSceneIntro::Start()
 		Pinball_ball_throw[i] = Pinball_ball_throw[i] * 2.5;
 	}
 
+	for (int i = 0; i != 8; i++)
+	{
+		Wall[i] = Wall[i] * 2.5;
+	}
+
 	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody,true);
 
 	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody, true);
@@ -82,6 +95,15 @@ bool ModuleSceneIntro::Start()
 	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35);
 
 
+	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody, true);
+
+	//Set filter data
+	b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
+	filter.groupIndex = -1;
+	wall->body->GetFixtureList()->SetFilterData(filter);
+
+
+	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
 	
@@ -117,8 +139,14 @@ bool ModuleSceneIntro::Start()
 
 	//Set up first ball
 
-	circles.add(App->physics->CreateCircle(1078, 653, 18, true));
-	circles.getLast()->data->listener = this;
+	ball = App->physics->CreateCircle(1078, 653, 18, true);
+	ball->listener = this;
+	//Set filter data
+	filter = ball->body->GetFixtureList()->GetFilterData();
+	filter.groupIndex = -1;
+	ball->body->GetFixtureList()->SetFilterData(filter);
+
+
 
 	return ret;
 }
@@ -135,39 +163,48 @@ bool ModuleSceneIntro::CleanUp()
 update_status ModuleSceneIntro::Update()
 {
 	//Ball should allways have 0 inclination
+	ball->body->SetTransform(b2Vec2(ball->body->GetPosition().x, ball->body->GetPosition().y), 0);
 
-	circles.getLast()->data->body->SetTransform(b2Vec2(circles.getLast()->data->body->GetPosition().x, circles.getLast()->data->body->GetPosition().y), 0);
-
-	if(App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	//Wall collision change management
+	if (wall_collision)
 	{
-		ray_on = !ray_on;
-		ray.x = App->input->GetMouseX();
-		ray.y = App->input->GetMouseY();
+		b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
+		filter.groupIndex = 0;
+		wall->body->GetFixtureList()->SetFilterData(filter);
+	}
+	else
+	{
+		b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
+		filter.groupIndex = -1;
+		wall->body->GetFixtureList()->SetFilterData(filter);
 	}
 
+
+	//Ball restart position
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ 
-		circles.getLast()->data->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1078), PIXEL_TO_METERS(653)), 0);
-		circles.getLast()->data->body->SetLinearVelocity(b2Vec2(0, 0));
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1078), PIXEL_TO_METERS(653)), 0);
+		ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	}
 
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+
+	//Pallets controller
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
 		Lflipper->body->ApplyAngularImpulse(-80, true);
 	else
 		Lflipper->body->ApplyAngularImpulse(1, true);
 
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
 		Rflipper->body->ApplyAngularImpulse(80, true);
 	else
 		Rflipper->body->ApplyAngularImpulse(-1, true);
 
 
+	//Ball thrower
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		PhysBody* tmp_body;
-		circles.at(0, tmp_body);
-		tmp_body->body->ApplyForceToCenter(b2Vec2(0, 10000), true);
+		ball->body->ApplyForceToCenter(b2Vec2(0, 10000), true);
 	}
 	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
@@ -189,27 +226,17 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	int x, y;
 
 	//App->audio->PlayFx(bonus_fx);
+
 	if (bodyA->body->GetFixtureList()->IsSensor())
 	{
-		if (bodyA->type == 0) //An special value has to be added to physbody to differenciate sensors
+		if (bodyA->type == 0) 
 		{
 			allow_throw = true;
+			wall_collision = false;
 		}
 		else if (bodyA->type == 1)
 		{
-			/*int Wall[8] = {
-				415, 0,
-				415, 100,
-				420, 100,
-				420, 0,
-			};
-
-			for (int i = 0; i != 8; i++)
-			{
-				Wall[i] = Wall[i] * 2.5;
-			}
-
-			wall = App->physics->CreateChain(422 * 2.5, (30 * 2.5), Wall, 8, b2_staticBody, false);*/
+			wall_collision = true;
 		}
 	}
 }
