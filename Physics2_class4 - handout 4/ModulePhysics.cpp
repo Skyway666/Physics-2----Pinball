@@ -107,7 +107,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height)
+PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int height, int type)
 {
 	b2BodyDef body;
 	body.type = b2_staticBody;
@@ -127,6 +127,7 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
+	pbody->type = type;
 	//pbody->listener = (Module*)App->scene_intro;
 	b->SetUserData(pbody);
 	pbody->width = width;

@@ -30,7 +30,7 @@ bool ModuleSceneIntro::Start()
 	// Creation of the pinball board body
 	int Pinball_box_1[10] = {
 		170, 390,
-		170, 342, // Palanca 1
+		170, 342, // Flipper 1
 		51, 273,
 		0, 193,
 		371, 0,
@@ -41,7 +41,7 @@ bool ModuleSceneIntro::Start()
 	int Pinball_box_2[8] = {
 		416, 30,
 		384, 286,
-		300, 342, //Palanca 2
+		300, 342, // Flipper 2
 		300, 390,
 	};
 
@@ -65,11 +65,11 @@ bool ModuleSceneIntro::Start()
 		Pinball_box_2[i] = Pinball_box_2[i] * 2.5;
 	}
 
+
 	for (int i = 0; i != 14; i++)
 	{
 		Pinball_ball_throw[i] = Pinball_ball_throw[i] * 2.5;
 	}
-
 
 	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody,true);
 
@@ -80,6 +80,7 @@ bool ModuleSceneIntro::Start()
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35);
 
 	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35);
+
 
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -110,6 +111,9 @@ bool ModuleSceneIntro::Start()
 	ball_throw = App->physics->CreateRectangleSensor(428 * 2.5, (286 * 2.5), 90, 35);
 	ball_throw->listener = this;
 
+
+	wall_sensor = App->physics->CreateRectangleSensor(410 * 2.5, (30 * 2.5), 10, 300, 1);
+	wall_sensor->listener = this;
 
 	//Set up first ball
 
@@ -185,10 +189,27 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	int x, y;
 
 	//App->audio->PlayFx(bonus_fx);
-
-	if (bodyA->body->GetFixtureList()->IsSensor()) //An special value has to be added to physbody to differenciate sensors
+	if (bodyA->body->GetFixtureList()->IsSensor())
 	{
-		allow_throw = true;
-	}
+		if (bodyA->type == 0) //An special value has to be added to physbody to differenciate sensors
+		{
+			allow_throw = true;
+		}
+		else if (bodyA->type == 1)
+		{
+			/*int Wall[8] = {
+				415, 0,
+				415, 100,
+				420, 100,
+				420, 0,
+			};
 
+			for (int i = 0; i != 8; i++)
+			{
+				Wall[i] = Wall[i] * 2.5;
+			}
+
+			wall = App->physics->CreateChain(422 * 2.5, (30 * 2.5), Wall, 8, b2_staticBody, false);*/
+		}
+	}
 }

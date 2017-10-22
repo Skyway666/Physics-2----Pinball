@@ -29,9 +29,11 @@ public:
 	PhysBody* Bpinball;
 	PhysBody* Lflipper;
 	PhysBody* Rflipper;
+	PhysBody* wall;
 
 	//Pinball sensors
 	PhysBody* ball_throw;
+	PhysBody* wall_sensor;
 
 	//Bools to controls cositas
 	bool allow_throw;

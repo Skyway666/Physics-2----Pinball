@@ -25,7 +25,7 @@ public:
 	int RayCast(int x1, int y1, int x2, int y2, float& normal_x, float& normal_y) const;
 
 public:
-	int width, height;
+	int width, height, type;
 	bool open_chain;
 	b2Body* body;
 	Module* listener;
@@ -45,7 +45,7 @@ public:
 
 	PhysBody* CreateCircle(int x, int y, int radius, bool bullet = false);
 	PhysBody* CreateRectangle(int x, int y, int width, int height);
-	PhysBody* CreateRectangleSensor(int x, int y, int width, int height);
+	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, int type = 0);
 	PhysBody* CreateChain(int x, int y, int* points, int size, b2BodyType type, bool open_chain = false);
 
 	// b2ContactListener ---
