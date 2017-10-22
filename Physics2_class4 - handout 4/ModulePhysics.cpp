@@ -212,59 +212,63 @@ update_status ModulePhysics::PostUpdate()
 				// Draw polygons ------------------------------------------------
 				case b2Shape::e_polygon:
 				{
-					b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
-					int32 count = polygonShape->GetVertexCount();
-					b2Vec2 prev, v;
+						b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
+						int32 count = polygonShape->GetVertexCount();
+						b2Vec2 prev, v;
 
-					//Dynamic bodies will be non filled rectangles
-					if (!f->IsSensor())
-					{ 
-						for(int32 i = 0; i < count; ++i)
-						{
-							v = b->GetWorldPoint(polygonShape->GetVertex(i));
-							if(i > 0)
-								App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
+						//Dynamic bodies will be non filled rectangles
+						if (!f->IsSensor())
+						{ 
+							for(int32 i = 0; i < count; ++i)
+							{
+								v = b->GetWorldPoint(polygonShape->GetVertex(i));
+								if(i > 0)
+									App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 
-							prev = v;
+								prev = v;
+							}
+
+							v = b->GetWorldPoint(polygonShape->GetVertex(0));
+							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
 						}
-
-						v = b->GetWorldPoint(polygonShape->GetVertex(0));
-						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 255, 100, 100);
-					}
-					//Sensors will be filled rectangles
-					else
-					{
-						PhysBody* b_data = (PhysBody*)b->GetUserData();
-						SDL_Rect drawing_rect;
-						b_data->GetPosition(drawing_rect.x, drawing_rect.y);
-						drawing_rect.w = b_data->width;
-						drawing_rect.h = b_data->height;
-						App->renderer->DrawQuad(drawing_rect, 0, 255, 0,150);
-					}
+						//Sensors will be filled rectangles
+						else
+						{
+							PhysBody* b_data = (PhysBody*)b->GetUserData();
+							SDL_Rect drawing_rect;
+							b_data->GetPosition(drawing_rect.x, drawing_rect.y);
+							drawing_rect.w = b_data->width;
+							drawing_rect.h = b_data->height;
+							App->renderer->DrawQuad(drawing_rect, 0, 255, 0,150);
+						}
 				}
 				break;
 
 				// Draw chains contour -------------------------------------------
 				case b2Shape::e_chain:
 				{
-					b2ChainShape* shape = (b2ChainShape*)f->GetShape();
-					b2Vec2 prev, v;
-
-					for(int32 i = 0; i < shape->m_count; ++i)
+					b2Filter filter = b->GetFixtureList()->GetFilterData();
+					if (filter.groupIndex == 0)
 					{
-						v = b->GetWorldPoint(shape->m_vertices[i]);
-						if(i > 0)
+						b2ChainShape* shape = (b2ChainShape*)f->GetShape();
+						b2Vec2 prev, v;
+
+						for (int32 i = 0; i < shape->m_count; ++i)
+						{
+							v = b->GetWorldPoint(shape->m_vertices[i]);
+							if (i > 0)
+								App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+							prev = v;
+						}
+
+						PhysBody* chain_data;
+
+						chain_data = (PhysBody*)b->GetUserData();
+						if (!chain_data->open_chain)
+						{
+							v = b->GetWorldPoint(shape->m_vertices[0]);
 							App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
-						prev = v;
-					}
-
-					PhysBody* chain_data;
-
-					chain_data = (PhysBody*)b->GetUserData();
-					if (!chain_data->open_chain)
-					{ 
-						v = b->GetWorldPoint(shape->m_vertices[0]);
-						App->renderer->DrawLine(METERS_TO_PIXELS(prev.x), METERS_TO_PIXELS(prev.y), METERS_TO_PIXELS(v.x), METERS_TO_PIXELS(v.y), 100, 255, 100);
+						}
 					}
 				}
 				break;
