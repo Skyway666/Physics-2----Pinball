@@ -102,6 +102,7 @@ bool ModuleSceneIntro::Start()
 	//Set bouncers
 	bouncer1 = App->physics->CreateCircle(821, 246, 50, b2_staticBody,1);
 	bouncer2 = App->physics->CreateCircle(495, 401, 50, b2_staticBody, 1);
+	bouncer2 = App->physics->CreateCircle(788, 504, 50, b2_staticBody, 1);
 	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -186,12 +187,12 @@ update_status ModuleSceneIntro::Update()
 
 	//Pallets controller
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		Lflipper->body->ApplyAngularImpulse(-40, true);
+		Lflipper->body->ApplyAngularImpulse(-190, true);
 	else
 		Lflipper->body->ApplyAngularImpulse(1, true);
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		Rflipper->body->ApplyAngularImpulse(40, true);
+		Rflipper->body->ApplyAngularImpulse(190, true);
 	else
 		Rflipper->body->ApplyAngularImpulse(-1, true);
 
@@ -199,7 +200,7 @@ update_status ModuleSceneIntro::Update()
 	//Ball thrower
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		ball->body->ApplyForceToCenter(b2Vec2(0, 100000), true);
+		ball->body->ApplyForceToCenter(b2Vec2(0, -10000), true);
 	}
 	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
@@ -235,7 +236,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}
 	else                                          //Body management
 	{
-		if (bodyA->type == 1 || bodyB->type == 1) //bouncer
+		if (bodyA->type == 1) //bouncer
 		{
 			iPoint ball_position;
 			iPoint bouncer_position;
@@ -245,12 +246,11 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 			b2Vec2 force((ball_position.x - bouncer_position.x), (ball_position.y - bouncer_position.y));
 			float32 Length = sqrt(pow(force.x, 2) + pow(force.y, 2));
-			force.x = (force.x / Length) * 10000;
-			force.y = (force.y / Length) * 10000;
+			force.x = (force.x / Length) * 200;
+			force.y = (force.y / Length) * 200;
 
             App->audio->PlayFx(bonus_fx);
-			bodyB->body->ApplyForceToCenter(force, true);
-			
+			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);
 		}
 	}
 
