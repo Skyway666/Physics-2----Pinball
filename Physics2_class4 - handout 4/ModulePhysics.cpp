@@ -57,10 +57,10 @@ update_status ModulePhysics::PreUpdate()
 	return UPDATE_CONTINUE;
 }
 
-PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool bullet)
+PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius,b2BodyType btype,int type, bool bullet)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = btype;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -69,8 +69,8 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool bullet)
 	shape.m_radius = PIXEL_TO_METERS(radius);
 	b2FixtureDef fixture;
 	fixture.shape = &shape;
-	fixture.density = 1.0f;
-	fixture.restitution = 0.5;
+	fixture.density = 10.0f;
+    fixture.restitution = 0.1;
 
 	b->CreateFixture(&fixture);
 
@@ -78,11 +78,12 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius, bool bullet)
 	pbody->body = b;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = radius;
+	pbody->type = type;
 
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
+PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, int type)
 {
 	b2BodyDef body;
 	body.type = b2_dynamicBody;
@@ -103,6 +104,7 @@ PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height)
 	b->SetUserData(pbody);
 	pbody->width = width * 0.5f;
 	pbody->height = height * 0.5f;
+	pbody->type = type;
 
 	return pbody;
 }
@@ -128,7 +130,6 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->type = type;
-	//pbody->listener = (Module*)App->scene_intro;
 	b->SetUserData(pbody);
 	pbody->width = width;
 	pbody->height = height;
@@ -136,10 +137,10 @@ PhysBody* ModulePhysics::CreateRectangleSensor(int x, int y, int width, int heig
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2BodyType type, bool open_chain)
+PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2BodyType btype,int type, bool open_chain)
 {
 	b2BodyDef body;
-	body.type = type;
+	body.type = btype;
 	body.position.Set(x, y);
 
 	b2Body* b = world->CreateBody(&body);
@@ -173,6 +174,7 @@ PhysBody* ModulePhysics::CreateChain(int x, int y, int* points, int size, b2Body
 	PhysBody* pbody = new PhysBody();
 	pbody->body = b;
 	pbody->open_chain = open_chain;
+	pbody->type = type;
 	b->SetUserData(pbody);
 	pbody->width = pbody->height = 0;
 
@@ -357,8 +359,17 @@ bool ModulePhysics::CleanUp()
 void PhysBody::GetPosition(int& x, int &y) const
 {
 	b2Vec2 pos = body->GetPosition();
-	x = METERS_TO_PIXELS(pos.x) - (width/2);
-	y = METERS_TO_PIXELS(pos.y) - (height/2);
+	if(body->GetFixtureList()->GetType() != b2Shape::e_circle)
+	{ 
+		x = METERS_TO_PIXELS(pos.x) - (width/2);
+		y = METERS_TO_PIXELS(pos.y) - (height/2);
+	}
+	else
+	{
+		x = METERS_TO_PIXELS(pos.x);
+		y = METERS_TO_PIXELS(pos.y);
+	}
+
 }
 
 float PhysBody::GetRotation() const
@@ -421,9 +432,13 @@ void ModulePhysics::BeginContact(b2Contact* contact)
 	PhysBody* physA = (PhysBody*)contact->GetFixtureA()->GetBody()->GetUserData();
 	PhysBody* physB = (PhysBody*)contact->GetFixtureB()->GetBody()->GetUserData();
 
-	if(physA && physA->listener != NULL)
-		physA->listener->OnCollision(physA, physB);
 
-	if(physB && physB->listener != NULL)
-		physB->listener->OnCollision(physB, physA);
+	if(!physA->body->GetFixtureList()->IsSensor() && !physB->body->GetFixtureList()->IsSensor())
+	{ 
+		if(physA && physA->listener != NULL)
+			physA->listener->OnCollision(physB, physA);
+
+		if(physB && physB->listener != NULL)
+			physB->listener->OnCollision(physA, physB);
+	}
 }

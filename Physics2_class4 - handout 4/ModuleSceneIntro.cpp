@@ -27,7 +27,7 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
-	// Creation of the pinball board body
+	// Set up pinball board
 	int Pinball_box_1[10] = {
 		170, 390,
 		170, 342, // Flipper 1
@@ -84,30 +84,28 @@ bool ModuleSceneIntro::Start()
 		Wall[i] = Wall[i] * 2.5;
 	}
 
-	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody,true);
+	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody, -1, true);
 
-	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody, true);
+	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody,-1, true);
 
-	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 14, b2_staticBody, true);
+	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 14, b2_staticBody,-1, true);
 
-	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35);
+	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,-1);
 
-	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35);
+	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35,-1);
 
-
-	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody, true);
-
-	//Set filter data
+	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody,-1, true);
 	b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
 	filter.groupIndex = -1;
 	wall->body->GetFixtureList()->SetFilterData(filter);
 
-
+	//Set bouncers
+	bouncer1 = App->physics->CreateCircle(821, 246, 50, b2_staticBody,1);
+	bouncer2 = App->physics->CreateCircle(495, 401, 50, b2_staticBody, 1);
 	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
 	
-
 	first_joint.bodyA = Lflipper->body; // Pala
 	first_joint.bodyB = Lpinball->body; // Tablero
 	first_joint.collideConnected = false;
@@ -129,19 +127,16 @@ bool ModuleSceneIntro::Start()
 	App->physics->world->CreateJoint(&first_joint);
 	App->physics->world->CreateJoint(&second_joint);
 
-	//Set up sensors 416, 286,
-	ball_throw = App->physics->CreateRectangleSensor(428 * 2.5, (286 * 2.5), 90, 35);
+	//Set up sensors 
+	ball_throw = App->physics->CreateRectangleSensor(428 * 2.5, (286 * 2.5), 90, 35, 0);
 	ball_throw->listener = this;
-
 
 	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 1);
 	wall_sensor->listener = this;
 
 	//Set up first ball
-
-	ball = App->physics->CreateCircle(1078, 653, 18, true);
+	ball = App->physics->CreateCircle(1078, 653, 18, b2_dynamicBody,0, true);
 	ball->listener = this;
-	//Set filter data
 	filter = ball->body->GetFixtureList()->GetFilterData();
 	filter.groupIndex = -1;
 	ball->body->GetFixtureList()->SetFilterData(filter);
@@ -191,12 +186,12 @@ update_status ModuleSceneIntro::Update()
 
 	//Pallets controller
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
-		Lflipper->body->ApplyAngularImpulse(-80, true);
+		Lflipper->body->ApplyAngularImpulse(-40, true);
 	else
 		Lflipper->body->ApplyAngularImpulse(1, true);
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
-		Rflipper->body->ApplyAngularImpulse(80, true);
+		Rflipper->body->ApplyAngularImpulse(40, true);
 	else
 		Rflipper->body->ApplyAngularImpulse(-1, true);
 
@@ -204,7 +199,7 @@ update_status ModuleSceneIntro::Update()
 	//Ball thrower
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
-		ball->body->ApplyForceToCenter(b2Vec2(0, 10000), true);
+		ball->body->ApplyForceToCenter(b2Vec2(0, 100000), true);
 	}
 	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
@@ -220,23 +215,43 @@ update_status ModuleSceneIntro::Update()
 	return UPDATE_CONTINUE;
 }
 
-//If there is just one sensor, body a is the sensor
+//If there is a sensor, body a is the sensor
+
+//If there is no sensor, body b is the ball
 void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 {
-	int x, y;
-
 	//App->audio->PlayFx(bonus_fx);
-
-	if (bodyA->body->GetFixtureList()->IsSensor())
+	if (bodyA->body->GetFixtureList()->IsSensor()) //Sensors management
 	{
-		if (bodyA->type == 0) 
+		if (bodyA->type == 0)  //Ball throwing position
 		{
 			allow_throw = true;
 			wall_collision = false;
 		}
-		else if (bodyA->type == 1)
+		else if (bodyA->type == 1) //Temporal barrier
 		{
 			wall_collision = true;
 		}
 	}
+	else                                          //Body management
+	{
+		if (bodyA->type == 1 || bodyB->type == 1) //bouncer
+		{
+			iPoint ball_position;
+			iPoint bouncer_position;
+			bodyA->GetPosition(bouncer_position.x, bouncer_position.y);
+ 			bodyB->GetPosition(ball_position.x, ball_position.y);
+
+
+			b2Vec2 force((ball_position.x - bouncer_position.x), (ball_position.y - bouncer_position.y));
+			float32 Length = sqrt(pow(force.x, 2) + pow(force.y, 2));
+			force.x = (force.x / Length) * 10000;
+			force.y = (force.y / Length) * 10000;
+
+            App->audio->PlayFx(bonus_fx);
+			bodyB->body->ApplyForceToCenter(force, true);
+			
+		}
+	}
+
 }
