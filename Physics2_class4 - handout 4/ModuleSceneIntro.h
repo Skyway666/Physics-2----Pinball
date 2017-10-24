@@ -5,7 +5,6 @@
 #include "Globals.h"
 
 class PhysBody;
-
 class ModuleSceneIntro : public Module
 {
 public:
@@ -40,21 +39,25 @@ public:
 	PhysBody* barrels_2; //type 2, body
 	//Ball
 	PhysBody* ball; //type 0, body
+    //CowBoys
+	PhysBody* cowboys[11]; //type 3, body
 	//Pinball sensors
 	PhysBody* ball_throw; //type 0, sensor
 	PhysBody* wall_sensor; //type 1, sensor
-
 	//Bools
 	bool allow_throw;
 	bool wall_collision;
-
 	bool sensed;
-
+	bool erase = false;
 	// Textures
 	SDL_Texture* background;
 	SDL_Texture* ball_sprite;
+	//Sounds
 	uint bonus_fx;
 	uint boing;
+	uint paw;
+
+
 	p2Point<int> ray;
 	bool ray_on;
 };

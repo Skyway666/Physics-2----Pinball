@@ -28,6 +28,7 @@ bool ModuleSceneIntro::Start()
 	//Load Assets
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	boing = App->audio->LoadFx("pinball/boing.wav");
+	paw = App->audio->LoadFx("pinball/paw.wav");
 	background = App->textures->Load("pinball/background.png");
 	ball_sprite = App->textures->Load("pinball/wheel.png");
 
@@ -94,14 +95,11 @@ bool ModuleSceneIntro::Start()
 
 	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 14, b2_staticBody,-1, true);
 
-	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,-1);
+	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
-	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35,-1);
+	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_dynamicBody ,-1);
 
 	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody,-1, true);
-	b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
-	filter.groupIndex = -1;
-	wall->body->GetFixtureList()->SetFilterData(filter);
 
 	//Set up bouncers
 	bouncer1 = App->physics->CreateCircle(760, 279, 25, b2_staticBody,1);
@@ -132,6 +130,17 @@ bool ModuleSceneIntro::Start()
 
 	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 2, false, 2);
 
+	//Set up cowboys
+	for (int i = 0; i <= 4; i++) // First row
+	{
+		cowboys[i] = App->physics->CreateRectangle(502 + i*35, 440-i*20, 30, 80, b2_staticBody, 3);
+	}
+
+	//for (int i = 6; i < 11; i++) //Second row
+	//{
+	//	cowboys[i] = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_staticBody, -1);
+	//}
+	
 	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
@@ -167,10 +176,6 @@ bool ModuleSceneIntro::Start()
 	//Set up first ball
 	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true);
 	ball->listener = this;
-	filter = ball->body->GetFixtureList()->GetFilterData();
-	filter.groupIndex = -1;
-	ball->body->GetFixtureList()->SetFilterData(filter);
-
 
 
 	return ret;
@@ -181,7 +186,7 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	App->textures->Unload(background);
-
+	App->textures->Unload(ball_sprite);
 	return true;
 }
 
@@ -194,16 +199,22 @@ update_status ModuleSceneIntro::Update()
 	//Wall collision change management
 	if (wall_collision)
 	{
-		b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
-		filter.groupIndex = 0;
-		wall->body->GetFixtureList()->SetFilterData(filter);
+		wall->body->SetActive(true);
 	}
 	else
 	{
-		b2Filter filter = wall->body->GetFixtureList()->GetFilterData();
-		filter.groupIndex = -1;
-		wall->body->GetFixtureList()->SetFilterData(filter);
+		wall->body->SetActive(false);
 	}
+
+
+
+
+	if (erase) //JUST A TEST
+	{
+		cowboys[0]->body->SetActive(false);
+	}
+
+
 
 
 	//Ball restart position
@@ -285,6 +296,11 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA->type == 2)
 		{
 			App->audio->PlayFx(boing);
+		}
+		if (bodyA->type == 3)
+		{
+			App->audio->PlayFx(paw);
+			erase = true; //JUST A TEST
 		}
 	}
 

@@ -83,10 +83,10 @@ PhysBody* ModulePhysics::CreateCircle(int x, int y, int radius,b2BodyType btype,
 	return pbody;
 }
 
-PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height, int type)
+PhysBody* ModulePhysics::CreateRectangle(int x, int y, int width, int height,b2BodyType btype, int type)
 {
 	b2BodyDef body;
-	body.type = b2_dynamicBody;
+	body.type = btype;
 	body.position.Set(PIXEL_TO_METERS(x), PIXEL_TO_METERS(y));
 
 	b2Body* b = world->CreateBody(&body);
@@ -214,6 +214,8 @@ update_status ModulePhysics::PostUpdate()
 				// Draw polygons ------------------------------------------------
 				case b2Shape::e_polygon:
 				{
+					if (b->IsActive())
+					{ 
 						b2PolygonShape* polygonShape = (b2PolygonShape*)f->GetShape();
 						int32 count = polygonShape->GetVertexCount();
 						b2Vec2 prev, v;
@@ -243,14 +245,14 @@ update_status ModulePhysics::PostUpdate()
 							drawing_rect.h = b_data->height;
 							App->renderer->DrawQuad(drawing_rect, 0, 255, 0,150);
 						}
+					}
 				}
 				break;
 
 				// Draw chains contour -------------------------------------------
 				case b2Shape::e_chain:
 				{
-					b2Filter filter = b->GetFixtureList()->GetFilterData();
-					if (filter.groupIndex == 0)
+					if (b->IsActive())
 					{
 						b2ChainShape* shape = (b2ChainShape*)f->GetShape();
 						b2Vec2 prev, v;
