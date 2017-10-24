@@ -26,6 +26,7 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
+	boing = App->audio->LoadFx("pinball/boing.wav");
 
 	background = App->textures->Load("pinball/background.png");
 
@@ -102,26 +103,33 @@ bool ModuleSceneIntro::Start()
 	wall->body->GetFixtureList()->SetFilterData(filter);
 
 	//Set up bouncers
-	bouncer1 = App->physics->CreateCircle(821, 246, 25, b2_staticBody,1);
-	bouncer2 = App->physics->CreateCircle(495, 401, 25, b2_staticBody, 1);
-	bouncer3 = App->physics->CreateCircle(788, 504, 25, b2_staticBody, 1);
+	bouncer1 = App->physics->CreateCircle(760, 279, 25, b2_staticBody,1);
+	bouncer2 = App->physics->CreateCircle(767, 362, 25, b2_staticBody, 1);
+	bouncer3 = App->physics->CreateCircle(867, 320, 25, b2_staticBody, 1);
 
 	//Set up barrels
-	int Barrels_1[6] = {
-		287, 616,
-		440, 724, 
-		346, 718,
+	int Barrels_1[14] = {
+		276,647,
+		326,641, 
+		381,634,
+		391,681,
+		425,705,
+		420,764,
+		275,696
+
 	};
 
-	barrels_1 = App->physics->CreateChain(0, 0, Barrels_1, 6, b2_staticBody, 2, false, 2);
+	barrels_1 = App->physics->CreateChain(0, 0, Barrels_1, 14, b2_staticBody, 2, false, 2);
 
-	int Barrels_2[6] = {
-		658, 747,
-		814, 634,
-		731, 788,
+	int Barrels_2[10] = {
+		756, 698,
+		874, 634,
+		901, 662,
+		898,699,
+		758,753
 	};
 
-	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 6, b2_staticBody, 2, false, 2);
+	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 2, false, 2);
 
 	//Set up joints
 	b2RevoluteJointDef first_joint;
@@ -273,6 +281,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
             App->audio->PlayFx(bonus_fx);
 			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);
+		}
+		if (bodyA->type == 2)
+		{
+			App->audio->PlayFx(boing);
 		}
 	}
 

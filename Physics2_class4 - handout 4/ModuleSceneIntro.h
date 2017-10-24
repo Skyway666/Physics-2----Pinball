@@ -54,6 +54,7 @@ public:
 	SDL_Texture* background;
 
 	uint bonus_fx;
+	uint boing;
 	p2Point<int> ray;
 	bool ray_on;
 };
