@@ -278,15 +278,36 @@ update_status ModuleSceneIntro::Update()
 	//Blit everything
 	App->renderer->Blit(background, 0, 0, 1.66);
 
+	if (cowboys[10]->alive)
+		App->renderer->Blit(sprites, 589, 271, 1.66, &N);
+	if (cowboys[9]->alive)
+		App->renderer->Blit(sprites, 557, 288, 1.66, &O2);
+	if (cowboys[8]->alive)
+		App->renderer->Blit(sprites, 525, 305, 1.66, &O);
+	if (cowboys[7]->alive)
+		App->renderer->Blit(sprites, 489, 323, 1.66, &L);
+	if (cowboys[6]->alive)
+		App->renderer->Blit(sprites, 453, 341, 1.66, &A);
+	if (cowboys[5]->alive)
+		App->renderer->Blit(sprites, 416, 359, 1.66, &S2);
+	if (cowboys[4]->alive)
+		App->renderer->Blit(sprites, 627, 316, 1.66, &I);
+	if (cowboys[3]->alive)
+		App->renderer->Blit(sprites, 592, 334, 1.66, &S);
+	if (cowboys[2]->alive)
+		App->renderer->Blit(sprites, 559, 352, 1.66, &P2);
+	if (cowboys[1]->alive)
+		App->renderer->Blit(sprites, 522, 372, 1.66, &E);
+	if (cowboys[0]->alive)
+		App->renderer->Blit(sprites, 486, 392, 1.66, &P);
+
+	if (!cowboys[0]->alive && !cowboys[1]->alive && !cowboys[2]->alive && !cowboys[3]->alive &&
+		!cowboys[4]->alive && !cowboys[5]->alive && !cowboys[6]->alive && !cowboys[7]->alive &&
+		!cowboys[8]->alive && !cowboys[9]->alive && !cowboys[10]->alive)
+		App->renderer->Blit(sprites, 416, 191, 1.66, &saloon);
+
 	if (idkk)
 		idkk;
-
-	App->renderer->Blit(sprites, 589, 271, 1.66, &N);
-	App->renderer->Blit(sprites, 557, 288, 1.66, &O2);
-	App->renderer->Blit(sprites, 525, 305, 1.66, &O);
-	App->renderer->Blit(sprites, 489, 323, 1.66, &L);
-	App->renderer->Blit(sprites, 453, 341, 1.66, &A);
-	App->renderer->Blit(sprites, 416, 359, 1.66, &S2);
 
 	int x, y;
 	
