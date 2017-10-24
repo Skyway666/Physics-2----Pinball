@@ -356,7 +356,7 @@ bool ModulePhysics::CleanUp()
 	return true;
 }
 
-void PhysBody::GetPosition(int& x, int &y) const
+void PhysBody::GetPosition(int& x, int &y, bool toblit) const
 {
 	b2Vec2 pos = body->GetPosition();
 	if(body->GetFixtureList()->GetType() != b2Shape::e_circle)
@@ -368,6 +368,11 @@ void PhysBody::GetPosition(int& x, int &y) const
 	{
 		x = METERS_TO_PIXELS(pos.x);
 		y = METERS_TO_PIXELS(pos.y);
+	}
+	if (toblit)
+	{
+		x = METERS_TO_PIXELS(pos.x) - (width);
+		y = METERS_TO_PIXELS(pos.y) - (height);
 	}
 
 }

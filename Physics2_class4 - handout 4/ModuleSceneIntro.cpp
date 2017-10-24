@@ -25,10 +25,11 @@ bool ModuleSceneIntro::Start()
 
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 
+	//Load Assets
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	boing = App->audio->LoadFx("pinball/boing.wav");
-
 	background = App->textures->Load("pinball/background.png");
+	ball_sprite = App->textures->Load("pinball/wheel.png");
 
 	// Set up pinball board
 	int Pinball_box_1[10] = {
@@ -51,8 +52,8 @@ bool ModuleSceneIntro::Start()
 	int Pinball_ball_throw[14] = {
 		416, 30,
 		455, 150,
-		416, 286,
-		435, 286,
+		1135/2.5, 744/2.5,
+		1192/2.5, 744/2.5,
 		474, 150,
 		435,0,
 		371,0
@@ -157,14 +158,14 @@ bool ModuleSceneIntro::Start()
 	App->physics->world->CreateJoint(&second_joint);
 
 	//Set up sensors 
-	ball_throw = App->physics->CreateRectangleSensor(428 * 2.5, (286 * 2.5), 90, 35, 0);
+	ball_throw = App->physics->CreateRectangleSensor(1162, 738, 90, 35, 0);
 	ball_throw->listener = this;
 
 	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 1);
 	wall_sensor->listener = this;
 
 	//Set up first ball
-	ball = App->physics->CreateCircle(1078, 653, 18, b2_dynamicBody,0, true);
+	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true);
 	ball->listener = this;
 	filter = ball->body->GetFixtureList()->GetFilterData();
 	filter.groupIndex = -1;
@@ -208,7 +209,7 @@ update_status ModuleSceneIntro::Update()
 	//Ball restart position
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ 
-		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1078), PIXEL_TO_METERS(653)), 0);
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
 		ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	}
 
@@ -233,15 +234,14 @@ update_status ModuleSceneIntro::Update()
 	}
 	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
-	
-	iPoint mouse;
-	mouse.x = App->input->GetMouseX();
-	mouse.y = App->input->GetMouseY();
-	int ray_hit = ray.DistanceTo(mouse);
 
-	fVector normal(0.0f, 0.0f);
 
+	//Blit everything
 	App->renderer->Blit(background, 0, 0, 1.66);
+	int x, y;
+	
+	ball->GetPosition(x, y, true);
+	App->renderer->Blit(ball_sprite,x,y, 0.7);
 	
 	return UPDATE_CONTINUE;
 }

@@ -52,7 +52,7 @@ public:
 
 	// Textures
 	SDL_Texture* background;
-
+	SDL_Texture* ball_sprite;
 	uint bonus_fx;
 	uint boing;
 	p2Point<int> ray;
