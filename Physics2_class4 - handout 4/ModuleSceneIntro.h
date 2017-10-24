@@ -24,16 +24,20 @@ public:
 
 
 	// Pinball board
-	PhysBody* Lpinball; //type -1, chain
-	PhysBody* Rpinball; //type -1, chain
-	PhysBody* Bpinball; //type -1, chain
-	PhysBody* wall;     //type -1, chain
+	PhysBody* Lpinball; //type -1, body
+	PhysBody* Rpinball; //type -1, body
+	PhysBody* Bpinball; //type -1, body
+	PhysBody* wall;     //type -1, body
 	//Flippers
-	PhysBody* Lflipper; //type -1, rectangle
-	PhysBody* Rflipper; //type -1, rectangle
+	PhysBody* Lflipper; //type -1, body
+	PhysBody* Rflipper; //type -1, body
 	//Bouncers
-	PhysBody* bouncer1; //type 1, circle
-	PhysBody* bouncer2;
+	PhysBody* bouncer1; //type 1, body
+	PhysBody* bouncer2; //type 1, body
+	PhysBody* bouncer3; //type 1, body
+	//Barrells
+	PhysBody* barrels_1; //type 2, body
+	PhysBody* barrels_2; //type 2, body
 	//Ball
 	PhysBody* ball; //type 0, body
 	//Pinball sensors

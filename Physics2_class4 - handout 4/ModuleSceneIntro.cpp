@@ -101,10 +101,28 @@ bool ModuleSceneIntro::Start()
 	filter.groupIndex = -1;
 	wall->body->GetFixtureList()->SetFilterData(filter);
 
-	//Set bouncers
-	bouncer1 = App->physics->CreateCircle(821, 246, 50, b2_staticBody,1);
-	bouncer2 = App->physics->CreateCircle(495, 401, 50, b2_staticBody, 1);
-	bouncer2 = App->physics->CreateCircle(788, 504, 50, b2_staticBody, 1);
+	//Set up bouncers
+	bouncer1 = App->physics->CreateCircle(821, 246, 25, b2_staticBody,1);
+	bouncer2 = App->physics->CreateCircle(495, 401, 25, b2_staticBody, 1);
+	bouncer3 = App->physics->CreateCircle(788, 504, 25, b2_staticBody, 1);
+
+	//Set up barrels
+	int Barrels_1[6] = {
+		287, 616,
+		440, 724, 
+		346, 718,
+	};
+
+	barrels_1 = App->physics->CreateChain(0, 0, Barrels_1, 6, b2_staticBody, 2, false, 2);
+
+	int Barrels_2[6] = {
+		658, 747,
+		814, 634,
+		731, 788,
+	};
+
+	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 6, b2_staticBody, 2, false, 2);
+
 	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
