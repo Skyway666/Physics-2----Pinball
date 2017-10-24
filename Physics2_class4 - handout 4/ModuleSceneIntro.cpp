@@ -135,12 +135,14 @@ bool ModuleSceneIntro::Start()
 	for (int i = 0; i <= 4; i++) // First row
 	{
 		cowboys[i] = App->physics->CreateRectangle(502 + i*35, 440-i*20, 30, 80, b2_staticBody, 3);
+		cowboys[i]->alive = true;
 	}
 
-	//for (int i = 6; i < 11; i++) //Second row
-	//{
-	//	cowboys[i] = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_staticBody, -1);
-	//}
+	for (int i = 5; i < 11; i++) //Second row
+	{
+		cowboys[i] = App->physics->CreateRectangle(440 + (i-5) * 35, 396 - (i-5) * 20, 30, 80, b2_staticBody, 3);
+		cowboys[i]->alive = true;
+	}
 	
 	//Set up joints
 	b2RevoluteJointDef first_joint;
@@ -213,9 +215,10 @@ update_status ModuleSceneIntro::Update()
 
 
 
-	if (erase) //JUST A TEST
+	for (int i = 0; i < 11; i++) //JUST A TEST
 	{
-		cowboys[0]->body->SetActive(false);
+		if(!cowboys[i]->alive)
+		cowboys[i]->body->SetActive(false);
 	}
 
 
@@ -336,7 +339,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA->type == 3)
 		{
 			App->audio->PlayFx(paw);
-			erase = true; //JUST A TEST
+			//bodyA->body->SetActive(false); Program dies for unknown reason, ask sensei
+			bodyA->alive = false;
 		}
 	}
 

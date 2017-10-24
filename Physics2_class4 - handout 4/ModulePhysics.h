@@ -27,6 +27,7 @@ public:
 public:
 	int width, height, type;
 	bool open_chain;
+	bool alive;
 	b2Body* body;
 	Module* listener;
 };
