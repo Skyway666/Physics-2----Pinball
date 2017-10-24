@@ -48,6 +48,26 @@ public:
 
 	// Textures
 	SDL_Texture* background;
+	SDL_Texture* sprites;
+
+	// Sprites:
+
+	// Cowboys
+	//SDL_Rect P{ 0, 28, 43, 63 };
+	//SDL_Rect E{ 0, 28, 43, 63 };
+	//SDL_Rect P2{ 0, 28, 43, 63 };
+	//SDL_Rect S{ 0, 28, 43, 63 };
+	//SDL_Rect I{ 0, 28, 43, 63 };
+	SDL_Rect S2 { 0, 28, 42, 61 };
+	SDL_Rect A { 43, 28, 42, 61 };
+	SDL_Rect L{ 86, 28, 40, 61 };
+	SDL_Rect O{ 127, 28, 38, 57 };
+	SDL_Rect O2{ 166, 28, 38, 57 };
+	SDL_Rect N{ 205, 28, 38, 57 };
+
+	int idk = 400;
+	int idk2 = 360;
+	bool idkk = false;
 
 	uint bonus_fx;
 	p2Point<int> ray;

@@ -28,6 +28,7 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
 	background = App->textures->Load("pinball/background.png");
+	sprites = App->textures->Load("pinball/sprites.png");
 
 	// Set up pinball board
 	int Pinball_box_1[10] = {
@@ -144,8 +145,6 @@ bool ModuleSceneIntro::Start()
 	filter.groupIndex = -1;
 	ball->body->GetFixtureList()->SetFilterData(filter);
 
-
-
 	return ret;
 }
 
@@ -154,6 +153,7 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	App->textures->Unload(background);
+	App->textures->Unload(sprites);
 
 	return true;
 }
@@ -200,6 +200,27 @@ update_status ModuleSceneIntro::Update()
 		Rflipper->body->ApplyAngularImpulse(-1, true);
 
 
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		idk2 -= 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		idk -= 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		idk += 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		idk2 += 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
+	{
+		if (idkk)
+			idkk = false;
+		else
+			idkk = true;
+	}
+
+
 	//Ball thrower
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -216,6 +237,15 @@ update_status ModuleSceneIntro::Update()
 	fVector normal(0.0f, 0.0f);
 
 	App->renderer->Blit(background, 0, 0, 1.66);
+	if (idkk)
+		idkk;
+
+	App->renderer->Blit(sprites, 589, 271, 1.66, &N);
+	App->renderer->Blit(sprites, 557, 288, 1.66, &O2);
+	App->renderer->Blit(sprites, 525, 305, 1.66, &O);
+	App->renderer->Blit(sprites, 489, 323, 1.66, &L);
+	App->renderer->Blit(sprites, 453, 341, 1.66, &A);
+	App->renderer->Blit(sprites, 416, 359, 1.66, &S2);
 	
 	return UPDATE_CONTINUE;
 }
