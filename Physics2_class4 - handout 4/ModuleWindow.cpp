@@ -1,7 +1,8 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleWindow.h"
-
+#include "p2SString.h"
+#include "ModuleInput.h"
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	window = NULL;
@@ -67,7 +68,13 @@ bool ModuleWindow::Init()
 
 	return ret;
 }
+update_status ModuleWindow::Update()
+{
+	p2SString title("Coordinates: %i, %i", App->input->GetMouseX(), App->input->GetMouseY());
 
+	SetTitle(title.GetString());
+	return UPDATE_CONTINUE;
+}
 // Called before quitting
 bool ModuleWindow::CleanUp()
 {
