@@ -68,6 +68,17 @@ public:
 	SDL_Rect O2 { 166, 28, 38, 57 };
 	SDL_Rect N { 205, 28, 38, 57 };
 	SDL_Rect saloon { 1, 208, 91, 64 };
+	SDL_Rect sombrero { 222, 218, 45, 44 };
+	SDL_Rect horse { 92, 208, 61, 118};
+	SDL_Rect flag1 { 1, 153, 79, 53 };
+	SDL_Rect flag2 { 83, 153, 59, 52 };
+	SDL_Rect flag3 { 144, 154, 50, 53 };
+	SDL_Rect x10 { 0, 0, 37, 27 };
+	SDL_Rect hold { 37, 0, 37, 27 };
+	SDL_Rect x6 { 74, 0, 37, 27 };
+	SDL_Rect x4 { 111, 0, 37, 27 };
+	SDL_Rect x8 { 148, 0, 37, 27 };
+	SDL_Rect x2 { 185, 0, 37, 27 };
 
 	int idk = 400;
 	int idk2 = 360;
