@@ -40,11 +40,14 @@ public:
 	PhysBody* ball_throw; //type 0, sensor
 	PhysBody* wall_sensor; //type 1, sensor
 
-	//Bools to control cositas
+	//Bools
 	bool allow_throw;
 	bool wall_collision;
 
 	bool sensed;
+
+	// Textures
+	SDL_Texture* background;
 
 	uint bonus_fx;
 	p2Point<int> ray;

@@ -91,7 +91,7 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y)
+bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, float scale, SDL_Rect* section, float speed, double angle, int pivot_x, int pivot_y)
 {
 	bool ret = true;
 	SDL_Rect rect;
@@ -108,8 +108,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	rect.w *= SCREEN_SIZE;
-	rect.h *= SCREEN_SIZE;
+	rect.w *= SCREEN_SIZE  * scale;
+	rect.h *= SCREEN_SIZE * scale;
 
 	SDL_Point* p = NULL;
 	SDL_Point pivot;

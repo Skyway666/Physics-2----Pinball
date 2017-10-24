@@ -27,6 +27,8 @@ bool ModuleSceneIntro::Start()
 
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 
+	background = App->textures->Load("pinball/background.png");
+
 	// Set up pinball board
 	int Pinball_box_1[10] = {
 		170, 390,
@@ -151,6 +153,7 @@ bool ModuleSceneIntro::Start()
 bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
+	App->textures->Unload(background);
 
 	return true;
 }
@@ -212,6 +215,7 @@ update_status ModuleSceneIntro::Update()
 
 	fVector normal(0.0f, 0.0f);
 
+	App->renderer->Blit(background, 0, 0, 1.66);
 	
 	return UPDATE_CONTINUE;
 }
