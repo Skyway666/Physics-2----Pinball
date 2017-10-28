@@ -243,6 +243,7 @@ update_status ModuleSceneIntro::Update()
 		bonus_sensorC->alive = true;
 		bonus_sensorR->alive = true;
 		score_mult++;
+		score_timer.Start(2);
 		App->audio->PlayFx(bonus_fx);
 	}
 
@@ -360,6 +361,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		}
 		if (bodyA->type == 2) //Score bust
 		{
+			if(score_timer.IsOver())
 			bodyA->alive = false;
 		}
 	}

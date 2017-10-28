@@ -5,6 +5,35 @@
 #include "Globals.h"
 
 class PhysBody;
+class timer
+{
+public:
+	void Start(int amount_of_time) //Amount of time in seconds
+	{
+		timer_duration = SDL_GetTicks() + amount_of_time * 1000;
+		timer_active = true;
+	}
+	bool IsOver()
+	{
+		if(timer_active)
+		{ 
+			if (timer_duration > SDL_GetTicks())
+			{ 
+				return false;
+			}
+			else
+			{ 
+				timer_active = false;
+				return true;
+			}
+		}
+		return true;
+	} 
+private:
+	int timer_duration;
+	bool timer_active;
+};
+
 class ModuleSceneIntro : public Module
 {
 public:
@@ -52,6 +81,7 @@ public:
 	int total_score;
 	int actual_score;
 	bool ongoing_turn; //Set to false when turn is over, then add actual_score*score_mult to total_score and make true again
+	timer score_timer;
 	//Bools
 	bool allow_throw;
 	bool wall_collision;
