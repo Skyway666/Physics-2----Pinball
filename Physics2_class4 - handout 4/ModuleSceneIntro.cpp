@@ -172,14 +172,33 @@ bool ModuleSceneIntro::Start()
 	//Set up sensors 
 	ball_throw = App->physics->CreateRectangleSensor(1162, 738, 90, 35, 0);
 	ball_throw->listener = this;
+	ball_throw->alive = true;
 
 	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 1);
 	wall_sensor->listener = this;
+	wall_sensor->alive = true;
+
+	bonus_sensorL = App->physics->CreateRectangleSensor(815, 204, 30, 25, 2);
+	bonus_sensorL->listener = this;
+	bonus_sensorL->alive = true;
+
+	bonus_sensorC = App->physics->CreateRectangleSensor(881, 224, 30, 25, 2);
+	bonus_sensorC->listener = this;
+	bonus_sensorC->alive = true;
+
+	bonus_sensorR = App->physics->CreateRectangleSensor(949, 250, 30, 25, 2);
+	bonus_sensorR->listener = this;
+	bonus_sensorR->alive = true;
 
 	//Set up first ball
 	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true);
 	ball->listener = this;
 
+	//Set up score variables
+	score_mult = 0;
+	total_score = 0;
+	actual_score = 0;
+	ongoing_turn = true;
 
 
 	return ret;
@@ -211,16 +230,21 @@ update_status ModuleSceneIntro::Update()
 	{
 		wall->body->SetActive(false);
 	}
-
-
-
-
-	for (int i = 0; i < 11; i++) //JUST A TEST
+    //Cowboys management
+	for (int i = 0; i < 11; i++) 
 	{
 		if(!cowboys[i]->alive)
 		cowboys[i]->body->SetActive(false);
 	}
-
+	//Score bust management
+	if (!bonus_sensorL->alive && !bonus_sensorC->alive && !bonus_sensorR->alive)
+	{
+		bonus_sensorL->alive = true;
+		bonus_sensorC->alive = true;
+		bonus_sensorR->alive = true;
+		score_mult++;
+		App->audio->PlayFx(bonus_fx);
+	}
 
 
 
@@ -330,9 +354,13 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			allow_throw = true;
 			wall_collision = false;
 		}
-		else if (bodyA->type == 1) //Temporal barrier
+		if (bodyA->type == 1) //Temporal barrier
 		{
 			wall_collision = true;
+		}
+		if (bodyA->type == 2) //Score bust
+		{
+			bodyA->alive = false;
 		}
 	}
 	else                                          //Body management
@@ -360,7 +388,6 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		if (bodyA->type == 3)
 		{
 			App->audio->PlayFx(paw);
-			//bodyA->body->SetActive(false); Program dies for unknown reason, ask sensei
 			bodyA->alive = false;
 		}
 	}

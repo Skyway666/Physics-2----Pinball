@@ -243,7 +243,10 @@ update_status ModulePhysics::PostUpdate()
 							b_data->GetPosition(drawing_rect.x, drawing_rect.y);
 							drawing_rect.w = b_data->width;
 							drawing_rect.h = b_data->height;
+							if(b_data->alive)
 							App->renderer->DrawQuad(drawing_rect, 0, 255, 0,150);
+							else
+							App->renderer->DrawQuad(drawing_rect, 255, 0, 0, 150);
 						}
 					}
 				}

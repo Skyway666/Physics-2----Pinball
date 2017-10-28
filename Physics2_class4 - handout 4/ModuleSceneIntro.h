@@ -44,6 +44,14 @@ public:
 	//Pinball sensors
 	PhysBody* ball_throw; //type 0, sensor
 	PhysBody* wall_sensor; //type 1, sensor
+	PhysBody* bonus_sensorL;//type 2,sensor
+	PhysBody* bonus_sensorC;//type 2,sensor
+	PhysBody* bonus_sensorR;//type 2,sensor
+    //Score controlling variables
+	int score_mult;
+	int total_score;
+	int actual_score;
+	bool ongoing_turn; //Set to false when turn is over, then add actual_score*score_mult to total_score and make true again
 	//Bools
 	bool allow_throw;
 	bool wall_collision;
