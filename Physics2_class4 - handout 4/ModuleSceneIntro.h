@@ -57,7 +57,8 @@ public:
 	PhysBody* Lpinball; //type -1, body
 	PhysBody* Rpinball; //type -1, body
 	PhysBody* Bpinball; //type -1, body
-	PhysBody* wall;     //type -1, body
+	PhysBody* wall1;     //type -1, body
+	PhysBody* wall2;
 	PhysBody* obstacle1; //type -1, body
 	PhysBody* obstacle2; //type -1, body
 	//Flippers

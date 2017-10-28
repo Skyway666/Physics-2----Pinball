@@ -51,23 +51,30 @@ bool ModuleSceneIntro::Start()
 		300, 390,
 	};
 
-	int Pinball_ball_throw[14] = {
+	int Pinball_ball_throw[16] = {
 		416, 30,
 		455, 150,
 		1135/2.5, 744/2.5,
 		1192/2.5, 744/2.5,
+		1300/2.5,557/2.5,
 		474, 150,
 		435,0,
 		371,0
 	};
 
-	int Wall[8] = {
+	int Wall1[8] = {
 		416, 0,
 		416, 100,
 		430, 100,
 		430, 0,
 	};
 
+	int Wall2[8] = {
+		1192 / 2.5, 744 / 2.5,
+		474, 150,
+		1192 / 2.5, 744 / 2.5,
+		474, 150
+	};
 
 	for (int i = 0; i != 10; i++)
 	{
@@ -79,28 +86,34 @@ bool ModuleSceneIntro::Start()
 		Pinball_box_2[i] = Pinball_box_2[i] * 2.5;
 	}
 
-
-	for (int i = 0; i != 14; i++)
+	for (int i = 0; i != 16; i++)
 	{
 		Pinball_ball_throw[i] = Pinball_ball_throw[i] * 2.5;
 	}
 
 	for (int i = 0; i != 8; i++)
 	{
-		Wall[i] = Wall[i] * 2.5;
+		Wall1[i] = Wall1[i] * 2.5;
+	}
+
+	for (int i = 0; i != 8; i++)
+	{
+		Wall2[i] = Wall2[i] * 2.5;
 	}
 
 	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody, -1, true);
 
 	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody,-1, true);
 
-	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 14, b2_staticBody,-1, true);
+	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 16, b2_staticBody,-1, true);
 
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
 	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_dynamicBody ,-1);
 
-	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody,-1, true);
+	wall1 = App->physics->CreateChain(0, 0, Wall1, 8, b2_staticBody,-1, true);
+
+	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, false);
 
 	obstacle1 = App->physics->CreateRectangle(838, 219, 10, 35, b2_staticBody, -1);
 
@@ -232,11 +245,13 @@ update_status ModuleSceneIntro::Update()
 	//Wall collision change management
 	if (wall_collision)
 	{
-		wall->body->SetActive(true);
+		wall1->body->SetActive(true);
+		wall2->body->SetActive(false);
 	}
 	else
 	{
-		wall->body->SetActive(false);
+		wall1->body->SetActive(false);
+		wall2->body->SetActive(true);
 	}
     //Cowboys management
 	for (int i = 0; i < 11; i++) 
@@ -260,7 +275,7 @@ update_status ModuleSceneIntro::Update()
 	//Ball restart position
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ 
-		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
+		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
 		ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	}
 
@@ -351,7 +366,7 @@ update_status ModuleSceneIntro::Update()
 }
 void ModuleSceneIntro::Reset_Small_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = actual_score * score_mult;
 	lives--;
@@ -359,7 +374,7 @@ void ModuleSceneIntro::Reset_Small_Game()
 
 void ModuleSceneIntro::Reset_Big_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = 0;
 	lives = 5;
