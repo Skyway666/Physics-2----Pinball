@@ -44,6 +44,8 @@ public:
 	update_status Update();
 	bool CleanUp();
 	void OnCollision(PhysBody* bodyA, PhysBody* bodyB);
+	void Reset_Small_Game();
+	void Reset_Big_Game();
 
 public:
 
@@ -76,11 +78,12 @@ public:
 	PhysBody* bonus_sensorL;//type 2,sensor
 	PhysBody* bonus_sensorC;//type 2,sensor
 	PhysBody* bonus_sensorR;//type 2,sensor
+	PhysBody* end_game; //type 3, sensor
     //Score controlling variables
 	int score_mult;
 	int total_score;
 	int actual_score;
-	bool ongoing_turn; //Set to false when turn is over, then add actual_score*score_mult to total_score and make true again
+	int lives;
 	timer score_timer;
 	//Bools
 	bool allow_throw;

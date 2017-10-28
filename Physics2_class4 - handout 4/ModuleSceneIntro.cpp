@@ -169,7 +169,7 @@ bool ModuleSceneIntro::Start()
 	App->physics->world->CreateJoint(&first_joint);
 	App->physics->world->CreateJoint(&second_joint);
 
-	//Set up sensors 
+	//Set up sensors 561,922
 	ball_throw = App->physics->CreateRectangleSensor(1162, 738, 90, 35, 0);
 	ball_throw->listener = this;
 	ball_throw->alive = true;
@@ -190,15 +190,19 @@ bool ModuleSceneIntro::Start()
 	bonus_sensorR->listener = this;
 	bonus_sensorR->alive = true;
 
+	end_game = App->physics->CreateRectangleSensor(561, 1000, 1000, 25, 3);
+	end_game->listener = this;
+	end_game->alive = true;
+
 	//Set up first ball
 	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true);
 	ball->listener = this;
 
 	//Set up score variables
-	score_mult = 0;
+	score_mult = 1;
 	total_score = 0;
 	actual_score = 0;
-	ongoing_turn = true;
+	lives = 5;
 
 
 	return ret;
@@ -341,6 +345,21 @@ update_status ModuleSceneIntro::Update()
 	
 	return UPDATE_CONTINUE;
 }
+void ModuleSceneIntro::Reset_Small_Game()
+{
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
+	ball->body->SetLinearVelocity(b2Vec2(0, 0));
+	total_score = actual_score * score_mult;
+	lives--;
+}
+
+void ModuleSceneIntro::Reset_Big_Game()
+{
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1164), PIXEL_TO_METERS(633)), 0);
+	ball->body->SetLinearVelocity(b2Vec2(0, 0));
+	total_score = 0;
+	lives = 5;
+}
 
 //If there is a sensor, body a is the sensor
 
@@ -364,6 +383,17 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			if(score_timer.IsOver())
 			bodyA->alive = false;
 		}
+		if (bodyA->type == 3) //Ball death
+		{
+			if (lives != 0)
+			{
+				Reset_Small_Game();
+			}
+			else
+			{
+				Reset_Big_Game();
+			}
+		}
 	}
 	else                                          //Body management
 	{
@@ -382,15 +412,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
             App->audio->PlayFx(bonus_fx);
 			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);
+			actual_score += 10;
 		}
 		if (bodyA->type == 2)
 		{
 			App->audio->PlayFx(boing);
+			actual_score+= 5;
 		}
 		if (bodyA->type == 3)
 		{
 			App->audio->PlayFx(paw);
 			bodyA->alive = false;
+			actual_score += 15;
 		}
 	}
 

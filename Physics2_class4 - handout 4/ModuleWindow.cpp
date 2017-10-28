@@ -3,6 +3,7 @@
 #include "ModuleWindow.h"
 #include "p2SString.h"
 #include "ModuleInput.h"
+#include"ModuleSceneIntro.h"
 ModuleWindow::ModuleWindow(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	window = NULL;
@@ -70,7 +71,7 @@ bool ModuleWindow::Init()
 }
 update_status ModuleWindow::Update()
 {
-	p2SString title("Coordinates: %i, %i", App->input->GetMouseX(), App->input->GetMouseY());
+	p2SString title("Coordinates: %i, %i Total Score: %i", App->input->GetMouseX(), App->input->GetMouseY(),App->scene_intro->total_score);
 
 	SetTitle(title.GetString());
 	return UPDATE_CONTINUE;
