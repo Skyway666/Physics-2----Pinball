@@ -102,6 +102,10 @@ bool ModuleSceneIntro::Start()
 
 	wall = App->physics->CreateChain(0, 0, Wall, 8, b2_staticBody,-1, true);
 
+	obstacle1 = App->physics->CreateRectangle(838, 219, 10, 35, b2_staticBody, -1);
+
+	obstacle2 = App->physics->CreateRectangle(910, 237, 10, 35, b2_staticBody, -1);
+
 	//Set up bouncers
 	bouncer1 = App->physics->CreateCircle(760, 279, 25, b2_staticBody,1);
 	bouncer2 = App->physics->CreateCircle(767, 362, 25, b2_staticBody, 1);
