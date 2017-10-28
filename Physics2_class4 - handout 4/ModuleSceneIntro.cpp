@@ -111,6 +111,8 @@ bool ModuleSceneIntro::Start()
 
 	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_dynamicBody ,-1);
 
+	Sflipper = App->physics->CreateRectangle(1000, 529, 180, 35, b2_dynamicBody, -1);
+
 	wall1 = App->physics->CreateChain(0, 0, Wall1, 8, b2_staticBody,-1, true);
 
 	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, false);
@@ -164,6 +166,7 @@ bool ModuleSceneIntro::Start()
 	//Set up joints
 	b2RevoluteJointDef first_joint;
 	b2RevoluteJointDef second_joint;
+	b2RevoluteJointDef third_joint;
 	
 	first_joint.bodyA = Lflipper->body; // Pala
 	first_joint.bodyB = Lpinball->body; // Tablero
@@ -183,9 +186,19 @@ bool ModuleSceneIntro::Start()
 	second_joint.lowerAngle = -30 * DEGTORAD;
 	second_joint.upperAngle = 30 * DEGTORAD;
 
+	third_joint.bodyA = Sflipper->body; // Pala
+	third_joint.bodyB = Rpinball->body; // Tablero
+	third_joint.collideConnected = false;
+	third_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
+	third_joint.localAnchorB.Set(PIXEL_TO_METERS(1000), PIXEL_TO_METERS(529));
+	third_joint.enableLimit = true;
+	third_joint.lowerAngle = -30 * DEGTORAD;
+	third_joint.upperAngle = 30 * DEGTORAD;
+
+
 	App->physics->world->CreateJoint(&first_joint);
 	App->physics->world->CreateJoint(&second_joint);
-
+	App->physics->world->CreateJoint(&third_joint);
 	//Set up sensors 561,922
 	ball_throw = App->physics->CreateRectangleSensor(1162, 738, 90, 35, 0);
 	ball_throw->listener = this;
@@ -222,6 +235,8 @@ bool ModuleSceneIntro::Start()
 	lives = 5;
 
 
+	Reset_Big_Game();
+	wall_collision = true;
 	return ret;
 }
 
@@ -275,8 +290,8 @@ update_status ModuleSceneIntro::Update()
 	//Ball restart position
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 	{ 
-		ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
-		ball->body->SetLinearVelocity(b2Vec2(0, 0));
+		Reset_Big_Game();
+		wall_collision = true;
 	}
 
 
@@ -288,9 +303,16 @@ update_status ModuleSceneIntro::Update()
 		Lflipper->body->ApplyAngularImpulse(1, true);
 
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+	{ 
 		Rflipper->body->ApplyAngularImpulse(190, true);
+	    Sflipper->body->ApplyAngularImpulse(190, true);
+	}
 	else
+	{ 
 		Rflipper->body->ApplyAngularImpulse(-1, true);
+		Sflipper->body->ApplyAngularImpulse(-1, true);
+	}
+
 
 
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)

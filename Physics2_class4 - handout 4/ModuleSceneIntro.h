@@ -57,13 +57,16 @@ public:
 	PhysBody* Lpinball; //type -1, body
 	PhysBody* Rpinball; //type -1, body
 	PhysBody* Bpinball; //type -1, body
+	//Activable walls
 	PhysBody* wall1;     //type -1, body
-	PhysBody* wall2;
+	PhysBody* wall2;     //type -1, body
+	//Obstacles
 	PhysBody* obstacle1; //type -1, body
 	PhysBody* obstacle2; //type -1, body
 	//Flippers
 	PhysBody* Lflipper; //type -1, body
 	PhysBody* Rflipper; //type -1, body
+	PhysBody* Sflipper; //type -1,body
 	//Bouncers
 	PhysBody* bouncer1; //type 1, body
 	PhysBody* bouncer2; //type 1, body
