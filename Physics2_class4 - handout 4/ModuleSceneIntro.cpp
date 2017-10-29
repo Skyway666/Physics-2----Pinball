@@ -289,7 +289,11 @@ update_status ModuleSceneIntro::Update()
 		score_timer.Start(2);
 		App->audio->PlayFx(bonus_fx);
 	}
-
+	//Music management
+	if (music_stop.IsOver() && Mix_PausedMusic())
+	{
+		Mix_ResumeMusic();
+	}
 
 
 	//Ball restart position
@@ -444,7 +448,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			if (lives != 0)
 			{
 				Reset_Small_Game();
-				App->audio->PlayFx(lose_sound);
+				App->audio->PlayFx(lose_sound);	
+				Mix_PauseMusic();
+				music_stop.Start(3);
+				
 			}
 			else
 			{

@@ -138,7 +138,7 @@ public:
 	uint paw;
 	uint lose_sound;
 	uint kill_cowboys;
-
+	timer music_stop;
 
 	p2Point<int> ray;
 	bool ray_on;
