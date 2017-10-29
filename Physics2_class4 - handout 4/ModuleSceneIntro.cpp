@@ -10,7 +10,6 @@
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
 	ray_on = false;
-	sensed = false;
 	allow_throw = false;
 }
 
@@ -29,6 +28,9 @@ bool ModuleSceneIntro::Start()
 	bonus_fx = App->audio->LoadFx("pinball/bonus.wav");
 	boing = App->audio->LoadFx("pinball/boing.wav");
 	paw = App->audio->LoadFx("pinball/paw.wav");
+	lose_sound = App->audio->LoadFx("pinball/lose.wav");
+	kill_cowboys = App->audio->LoadFx("pinball/kill_cowboys.wav");
+
 	background = App->textures->Load("pinball/background.png");
 	sprites = App->textures->Load("pinball/sprites.png");
 	ball_sprite = App->textures->Load("pinball/wheel.png");
@@ -234,9 +236,12 @@ bool ModuleSceneIntro::Start()
 	actual_score = 0;
 	lives = 5;
 
+	//Set up bools
+    wall_collision = true;
+	cowboys_killed = false;
 
 	Reset_Big_Game();
-	wall_collision = true;
+	
 	return ret;
 }
 
@@ -373,8 +378,16 @@ update_status ModuleSceneIntro::Update()
 
 	if (!cowboys[0]->alive && !cowboys[1]->alive && !cowboys[2]->alive && !cowboys[3]->alive &&
 		!cowboys[4]->alive && !cowboys[5]->alive && !cowboys[6]->alive && !cowboys[7]->alive &&
-		!cowboys[8]->alive && !cowboys[9]->alive && !cowboys[10]->alive)
+		!cowboys[8]->alive && !cowboys[9]->alive && !cowboys[10]->alive) 
+	{ 
 		App->renderer->Blit(sprites, 416, 191, 1.66, &saloon);
+		if (!cowboys_killed)
+		{
+			App->audio->PlayFx(kill_cowboys);
+			cowboys_killed = true;
+		}
+	    
+	}
 
 	if (idkk)
 		idkk;
@@ -431,6 +444,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			if (lives != 0)
 			{
 				Reset_Small_Game();
+				App->audio->PlayFx(lose_sound);
 			}
 			else
 			{

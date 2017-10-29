@@ -94,7 +94,7 @@ public:
 	//Bools
 	bool allow_throw;
 	bool wall_collision;
-	bool sensed;
+	bool cowboys_killed;
 	bool erase = false;
 	// Textures
 	SDL_Texture* background;
@@ -136,6 +136,8 @@ public:
 	uint bonus_fx;
 	uint boing;
 	uint paw;
+	uint lose_sound;
+	uint kill_cowboys;
 
 
 	p2Point<int> ray;
