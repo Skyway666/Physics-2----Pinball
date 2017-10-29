@@ -71,7 +71,7 @@ bool ModuleWindow::Init()
 }
 update_status ModuleWindow::Update()
 {
-	p2SString title("Coordinates: %i, %i Total Score: %i Actual score: %i", App->input->GetMouseX(), App->input->GetMouseY(),App->scene_intro->total_score, App->scene_intro->actual_score);
+	p2SString title("Coordinates: %i, %i Total Score: %i Actual score: %i Score multiplier: %i Lives: %i", App->input->GetMouseX(), App->input->GetMouseY(),App->scene_intro->total_score, App->scene_intro->actual_score, App->scene_intro->score_mult,App->scene_intro->lives);
 
 	SetTitle(title.GetString());
 	return UPDATE_CONTINUE;
