@@ -132,6 +132,7 @@ public:
 	bool idkk = false;
 
 	SDL_Texture* ball_sprite;
+	SDL_Texture* flipper_sprite;
 	//Sounds
 	uint bonus_fx;
 	uint boing;

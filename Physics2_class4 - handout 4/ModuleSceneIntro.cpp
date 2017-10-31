@@ -34,6 +34,7 @@ bool ModuleSceneIntro::Start()
 	background = App->textures->Load("pinball/background.png");
 	sprites = App->textures->Load("pinball/sprites.png");
 	ball_sprite = App->textures->Load("pinball/wheel.png");
+	flipper_sprite = App->textures->Load("pinball/flipper.png");
 
 	// Set up pinball board
 	int Pinball_box_1[10] = {
@@ -252,6 +253,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(background);
 	App->textures->Unload(sprites);
 	App->textures->Unload(ball_sprite);
+	App->textures->Unload(flipper_sprite);
 
 	return true;
 }
@@ -400,6 +402,12 @@ update_status ModuleSceneIntro::Update()
 	
 	ball->GetPosition(x, y, true);
 	App->renderer->Blit(ball_sprite,x,y, 0.7);
+	Rflipper->GetPosition(x, y, true);
+	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Rflipper->GetRotation() + 30);
+	Sflipper->GetPosition(x, y, true);
+	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Sflipper->GetRotation() + 30);
+	Lflipper->GetPosition(x, y, true);
+	App->renderer->Blit(flipper_sprite, x - 5, y - 40, 0.55, (SDL_Rect*)0, 1, Lflipper->GetRotation() - 30, true);
 	
 	return UPDATE_CONTINUE;
 }
