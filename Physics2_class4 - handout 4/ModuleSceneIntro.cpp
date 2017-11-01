@@ -30,6 +30,7 @@ bool ModuleSceneIntro::Start()
 	paw = App->audio->LoadFx("pinball/paw.wav");
 	lose_sound = App->audio->LoadFx("pinball/lose.wav");
 	kill_cowboys = App->audio->LoadFx("pinball/kill_cowboys.wav");
+	multiply = App->audio->LoadFx("pinball/multiply.wav");
 
 	background = App->textures->Load("pinball/background.png");
 	sprites = App->textures->Load("pinball/sprites.png");
@@ -263,9 +264,12 @@ update_status ModuleSceneIntro::Update()
 		bonus_sensorL->alive = true;
 		bonus_sensorC->alive = true;
 		bonus_sensorR->alive = true;
-		score_mult++;
+		if (score_mult == 1)
+			score_mult++;
+		else if (score_mult != 10)
+			score_mult += 2;
+		App->audio->PlayFx(multiply);
 		score_timer.Start(2);
-		App->audio->PlayFx(bonus_fx);
 	}
 	//Music management
 	if (music_stop.IsOver() && Mix_PausedMusic())

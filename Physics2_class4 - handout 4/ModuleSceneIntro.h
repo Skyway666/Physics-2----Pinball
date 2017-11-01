@@ -137,6 +137,7 @@ public:
 	uint paw;
 	uint lose_sound;
 	uint kill_cowboys;
+	uint multiply;
 	timer music_stop;
 
 	p2Point<int> ray;
