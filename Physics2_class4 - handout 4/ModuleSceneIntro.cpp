@@ -397,6 +397,7 @@ void ModuleSceneIntro::Reset_Big_Game()
 			cowboys[i]->body->SetActive(true);
 			cowboys[i]->alive = true;
 		}
+		cowboys_killed = false;
 	}
 	lives = 5;
 }
