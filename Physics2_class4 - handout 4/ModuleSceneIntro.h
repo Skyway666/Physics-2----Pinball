@@ -54,9 +54,7 @@ public:
 
 
 	// Pinball board
-	PhysBody* Lpinball; //type -1, body
-	PhysBody* Rpinball; //type -1, body
-	PhysBody* Bpinball; //type -1, body
+	PhysBody* pinball; //type -1, body
 	//Activable walls
 	PhysBody* wall1;     //type -1, body
 	PhysBody* wall2;     //type -1, body

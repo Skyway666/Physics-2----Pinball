@@ -37,78 +37,46 @@ bool ModuleSceneIntro::Start()
 	flipper_sprite = App->textures->Load("pinball/flipper.png");
 
 	// Set up pinball board
-	int Pinball_box_1[10] = {
-		170, 390,
-		170, 342, // Flipper 1
-		51, 273,
-		0, 193,
-		371, 0,
-	
-
-	};	
-	
-	int Pinball_box_2[8] = {
-		416, 30,
-		384, 286,
-		300, 342, // Flipper 2
-		300, 390,
-	};
-
-	int Pinball_ball_throw[16] = {
-		416, 30,
-		455, 150,
-		1135/2.5, 744/2.5,
-		1192/2.5, 744/2.5,
-		1300/2.5,557/2.5,
-		474, 150,
-		435,0,
-		371,0
+	int Pinball_box[48] = {
+		1190, 740,
+		1194, 622,
+		1200, 482,
+		1170, 310,
+		1130, 200,
+		1030, 160,
+		975, 180,
+		870, 137,
+		350, 425,
+		318, 392,
+		90, 505,
+		165, 660,
+		250, 746,
+		425, 856,
+		425, 1200,
+		750, 1200,
+		750, 856,
+		897, 755,
+		982, 293,
+		980, 220,
+		1036, 203,
+		1115, 286,
+		1155, 463,
+		1144, 740
 	};
 
 	int Wall1[8] = {
 		416, 0,
 		416, 100,
 		430, 100,
-		430, 0,
+		430, 0
 	};
-
-	int Wall2[8] = {
-		1192 / 2.5, 744 / 2.5,
-		474, 150,
-		1192 / 2.5, 744 / 2.5,
-		474, 150
-	};
-
-	for (int i = 0; i != 10; i++)
-	{
-		Pinball_box_1[i] = Pinball_box_1[i] * 2.5;
-	}
-	
-	for (int i = 0; i != 8; i++)
-	{
-		Pinball_box_2[i] = Pinball_box_2[i] * 2.5;
-	}
-
-	for (int i = 0; i != 16; i++)
-	{
-		Pinball_ball_throw[i] = Pinball_ball_throw[i] * 2.5;
-	}
 
 	for (int i = 0; i != 8; i++)
 	{
 		Wall1[i] = Wall1[i] * 2.5;
 	}
 
-	for (int i = 0; i != 8; i++)
-	{
-		Wall2[i] = Wall2[i] * 2.5;
-	}
-
-	Lpinball = App->physics->CreateChain(0, 0, Pinball_box_1, 10, b2_staticBody, -1, true);
-
-	Rpinball = App->physics->CreateChain(0, 0, Pinball_box_2, 8, b2_staticBody,-1, true);
-
-	Bpinball = App->physics->CreateChain(0, 0, Pinball_ball_throw, 16, b2_staticBody,-1, true);
+	pinball = App->physics->CreateChain(0, 0, Pinball_box, 48, b2_staticBody, -1);
 
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
@@ -117,8 +85,6 @@ bool ModuleSceneIntro::Start()
 	Sflipper = App->physics->CreateRectangle(1000, 529, 180, 35, b2_dynamicBody, -1);
 
 	wall1 = App->physics->CreateChain(0, 0, Wall1, 8, b2_staticBody,-1, true);
-
-	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, false);
 
 	obstacle1 = App->physics->CreateRectangle(838, 219, 10, 35, b2_staticBody, -1);
 
@@ -171,8 +137,8 @@ bool ModuleSceneIntro::Start()
 	b2RevoluteJointDef second_joint;
 	b2RevoluteJointDef third_joint;
 	
-	first_joint.bodyA = Lflipper->body; // Pala
-	first_joint.bodyB = Lpinball->body; // Tablero
+	first_joint.bodyA = Lflipper->body; // Flipper
+	first_joint.bodyB = pinball->body; // Box
 	first_joint.collideConnected = false;
 	first_joint.localAnchorA.Set(PIXEL_TO_METERS(-50), PIXEL_TO_METERS(0));
 	first_joint.localAnchorB.Set(PIXEL_TO_METERS(170 * 2.5), PIXEL_TO_METERS((352* 2.5)));
@@ -180,8 +146,8 @@ bool ModuleSceneIntro::Start()
 	first_joint.lowerAngle = -30 * DEGTORAD;
 	first_joint.upperAngle = 30 * DEGTORAD;
 
-	second_joint.bodyA = Rflipper->body; // Pala
-	second_joint.bodyB = Rpinball->body; // Tablero
+	second_joint.bodyA = Rflipper->body; // Flipper
+	second_joint.bodyB = pinball->body; // Box
 	second_joint.collideConnected = false;
 	second_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
 	second_joint.localAnchorB.Set(PIXEL_TO_METERS(300 * 2.5), PIXEL_TO_METERS((352 * 2.5)));
@@ -189,8 +155,8 @@ bool ModuleSceneIntro::Start()
 	second_joint.lowerAngle = -30 * DEGTORAD;
 	second_joint.upperAngle = 30 * DEGTORAD;
 
-	third_joint.bodyA = Sflipper->body; // Pala
-	third_joint.bodyB = Rpinball->body; // Tablero
+	third_joint.bodyA = Sflipper->body; // Flipper
+	third_joint.bodyB = pinball->body; // Box
 	third_joint.collideConnected = false;
 	third_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
 	third_joint.localAnchorB.Set(PIXEL_TO_METERS(1000), PIXEL_TO_METERS(529));
@@ -268,12 +234,10 @@ update_status ModuleSceneIntro::Update()
 	if (wall_collision)
 	{
 		wall1->body->SetActive(true);
-		wall2->body->SetActive(false);
 	}
 	else
 	{
 		wall1->body->SetActive(false);
-		wall2->body->SetActive(true);
 	}
     //Cowboys management
 	for (int i = 0; i < 11; i++) 
@@ -413,7 +377,7 @@ update_status ModuleSceneIntro::Update()
 }
 void ModuleSceneIntro::Reset_Small_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1170), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = actual_score * score_mult;
 	actual_score = 0;
@@ -423,7 +387,7 @@ void ModuleSceneIntro::Reset_Small_Game()
 
 void ModuleSceneIntro::Reset_Big_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(550)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1170), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = 0;
 	lives = 5;
