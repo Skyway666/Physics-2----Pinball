@@ -6,6 +6,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModulePhysics.h"
+#include "ModuleFonts.h"
 
 ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Module(app, start_enabled)
 {
@@ -36,6 +37,8 @@ bool ModuleSceneIntro::Start()
 	sprites = App->textures->Load("pinball/sprites.png");
 	ball_sprite = App->textures->Load("pinball/wheel.png");
 	flipper_sprite = App->textures->Load("pinball/flipper.png");
+
+	font_score = App->fonts->Load("pinball/Font.png", "> ?@ABCDEFGHIJKLMNOPQRSTUVWXYZ!¡?_^#$%&'()x+.-,;tpsczpc/0123456789:", 1);
 
 	// Set up pinball board
 	int Pinball_box[50] = {
@@ -219,7 +222,8 @@ bool ModuleSceneIntro::Start()
 	cowboys_killed = false;
 
 	Reset_Big_Game();
-	
+	sprintf_s(score_text, 20, "SCORE!");
+	sprintf_s(balls_text, 5, "B");
 	return ret;
 }
 
@@ -231,6 +235,7 @@ bool ModuleSceneIntro::CleanUp()
 	App->textures->Unload(sprites);
 	App->textures->Unload(ball_sprite);
 	App->textures->Unload(flipper_sprite);
+	App->fonts->UnLoad(font_score);
 
 	return true;
 }
@@ -304,29 +309,6 @@ update_status ModuleSceneIntro::Update()
 		Sflipper->body->ApplyAngularImpulse(-1, true);
 	}
 
-
-
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		idk2 -= 1;
-
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		idk -= 1;
-
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		idk += 1;
-
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		idk2 += 1;
-
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_DOWN)
-	{
-		if (idkk)
-			idkk = false;
-		else
-			idkk = true;
-	}
-
-
 	//Ball thrower
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
@@ -376,8 +358,8 @@ update_status ModuleSceneIntro::Update()
 	    
 	}
 
-	if (idkk)
-		idkk;
+	App->fonts->BlitText(335 - strlen(score_text) * App->fonts->char_width * 3, 864, 0, score_text);
+	App->fonts->BlitText(365, 864, 0, balls_text);
 
 	int x, y;
 	
@@ -389,7 +371,7 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Sflipper->GetRotation() + 30);
 	Lflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x - 5, y - 40, 0.55, (SDL_Rect*)0, 1, Lflipper->GetRotation() - 30, true);
-	
+
 	return UPDATE_CONTINUE;
 }
 void ModuleSceneIntro::Reset_Small_Game()

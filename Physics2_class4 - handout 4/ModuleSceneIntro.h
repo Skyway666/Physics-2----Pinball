@@ -89,6 +89,9 @@ public:
 	int actual_score;
 	int lives;
 	timer score_timer;
+	int font_score = -1;
+	char score_text[20];
+	char balls_text[5];
 	//Bools
 	bool allow_throw;
 	bool wall_collision;
@@ -124,10 +127,6 @@ public:
 	SDL_Rect x4 { 111, 0, 37, 27 };
 	SDL_Rect x8 { 148, 0, 37, 27 };
 	SDL_Rect x2 { 185, 0, 37, 27 };
-
-	int idk = 400;
-	int idk2 = 360;
-	bool idkk = false;
 
 	SDL_Texture* ball_sprite;
 	SDL_Texture* flipper_sprite;
