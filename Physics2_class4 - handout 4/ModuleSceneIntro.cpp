@@ -37,9 +37,10 @@ bool ModuleSceneIntro::Start()
 	flipper_sprite = App->textures->Load("pinball/flipper.png");
 
 	// Set up pinball board
-	int Pinball_box[48] = {
+	int Pinball_box[50] = {
 		1190, 740,
-		1194, 622,
+		1190, 700,
+		1300,650,
 		1200, 482,
 		1170, 310,
 		1130, 200,
@@ -71,12 +72,19 @@ bool ModuleSceneIntro::Start()
 		430, 0
 	};
 
+	int Wall2[8] = {
+		1190, 740,
+		1200, 482,
+		1190, 740,
+		1200, 482,
+	};
+
 	for (int i = 0; i != 8; i++)
 	{
 		Wall1[i] = Wall1[i] * 2.5;
 	}
 
-	pinball = App->physics->CreateChain(0, 0, Pinball_box, 48, b2_staticBody, -1);
+	pinball = App->physics->CreateChain(0, 0, Pinball_box, 50, b2_staticBody, -1);
 
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
@@ -85,6 +93,8 @@ bool ModuleSceneIntro::Start()
 	Sflipper = App->physics->CreateRectangle(1000, 529, 180, 35, b2_dynamicBody, -1);
 
 	wall1 = App->physics->CreateChain(0, 0, Wall1, 8, b2_staticBody,-1, true);
+
+	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, true);
 
 	obstacle1 = App->physics->CreateRectangle(838, 219, 10, 35, b2_staticBody, -1);
 
@@ -234,10 +244,12 @@ update_status ModuleSceneIntro::Update()
 	if (wall_collision)
 	{
 		wall1->body->SetActive(true);
+		wall2->body->SetActive(false);
 	}
 	else
 	{
 		wall1->body->SetActive(false);
+		wall2->body->SetActive(true);
 	}
     //Cowboys management
 	for (int i = 0; i < 11; i++) 
@@ -377,7 +389,7 @@ update_status ModuleSceneIntro::Update()
 }
 void ModuleSceneIntro::Reset_Small_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1170), PIXEL_TO_METERS(580)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = actual_score * score_mult;
 	actual_score = 0;
@@ -387,9 +399,18 @@ void ModuleSceneIntro::Reset_Small_Game()
 
 void ModuleSceneIntro::Reset_Big_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1170), PIXEL_TO_METERS(580)), 0);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = 0;
+
+	if (lives == 0) //Reset cowboys
+	{
+		for (int i = 0; i < 11; i++)
+		{
+			cowboys[i]->body->SetActive(true);
+			cowboys[i]->alive = true;
+		}
+	}
 	lives = 5;
 }
 
@@ -427,7 +448,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			}
 			else
 			{
-				Reset_Big_Game();
+				Reset_Big_Game(); //Fx sound should be different from small_reset sound
 			}
 		}
 	}
