@@ -367,6 +367,7 @@ update_status ModuleSceneIntro::Update()
 		{
 			App->audio->PlayFx(kill_cowboys);
 			cowboys_killed = true;
+			actual_score += 100;
 		}
 	    
 	}
@@ -391,7 +392,7 @@ void ModuleSceneIntro::Reset_Small_Game()
 {
 	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
-	total_score = actual_score * score_mult;
+	total_score = total_score + actual_score * score_mult;
 	actual_score = 0;
 	score_mult = 1;
 	lives--;
