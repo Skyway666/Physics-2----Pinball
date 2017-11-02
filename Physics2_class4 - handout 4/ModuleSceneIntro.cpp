@@ -136,9 +136,9 @@ bool ModuleSceneIntro::Start()
 	obstacle2 = App->physics->CreateRectangle(911, 231, 8, 35, b2_staticBody, -1);
 
 	//Set up bouncers
-	bouncer1 = App->physics->CreateCircle(760, 279, 25, b2_staticBody,1);
-	bouncer2 = App->physics->CreateCircle(767, 362, 25, b2_staticBody, 1);
-	bouncer3 = App->physics->CreateCircle(867, 320, 25, b2_staticBody, 1);
+	bouncer1 = App->physics->CreateCircle(760, 279, 20, b2_staticBody,1);
+	bouncer2 = App->physics->CreateCircle(767, 362, 20, b2_staticBody, 1);
+	bouncer3 = App->physics->CreateCircle(867, 320, 20, b2_staticBody, 1);
 
 	//Set up barrels
 	int Barrels_1[32] = {
@@ -275,7 +275,7 @@ bool ModuleSceneIntro::Start()
 	score_mult = 1;
 	total_score = 0;
 	actual_score = 0;
-
+	hi_score = 0;
 
 	//Set up bools
     wall_collision = true;
@@ -536,8 +536,11 @@ void ModuleSceneIntro::Reset_Big_Game()
 {
 	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
+	if (hi_score < total_score)
+		hi_score = total_score;
 	total_score = 0;
-
+	actual_score = 0;
+	
 	if (lives == 0) //Reset cowboys
 	{
 		for (int i = 0; i < 11; i++)

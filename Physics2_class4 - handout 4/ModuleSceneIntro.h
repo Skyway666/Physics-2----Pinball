@@ -94,6 +94,7 @@ public:
 	int score_mult;
 	int total_score;
 	int actual_score;
+	int hi_score;
 	int lives;
 	timer score_timer;
 	timer score_timer_barrow;
