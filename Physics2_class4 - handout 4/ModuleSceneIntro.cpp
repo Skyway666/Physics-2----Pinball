@@ -484,7 +484,7 @@ update_status ModuleSceneIntro::Update()
 		{
 			App->audio->PlayFx(kill_cowboys);
 			cowboys_killed = true;
-			actual_score += 100;
+			actual_score += 20000;
 		}
 	    
 	}
