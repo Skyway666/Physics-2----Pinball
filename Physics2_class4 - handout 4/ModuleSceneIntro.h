@@ -155,7 +155,9 @@ public:
 	uint level_3;
 	uint level_4;
 	uint maximum;
+	uint horse_sound;
 	uint you_lose;
+	uint lose_melody;
 	timer music_stop;
 
 	p2Point<int> ray;

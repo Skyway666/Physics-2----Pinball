@@ -38,6 +38,8 @@ bool ModuleSceneIntro::Start()
 	level_4 = App->audio->LoadFx("pinball/level_4.wav");
 	maximum = App->audio->LoadFx("pinball/maximum.wav");
 	you_lose = App->audio->LoadFx("pinball/you_lose.wav");
+	horse_sound =  App->audio->LoadFx("pinball/horse.wav");
+	lose_melody = App->audio->LoadFx("pinball/lose_melody.wav");
 
 	background = App->textures->Load("pinball/background.png");
 	front = App->textures->Load("pinball/front.png");
@@ -264,7 +266,7 @@ bool ModuleSceneIntro::Start()
 	score_mult = 1;
 	total_score = 0;
 	actual_score = 0;
-	lives = 5;
+
 
 	//Set up bools
     wall_collision = true;
@@ -342,7 +344,7 @@ update_status ModuleSceneIntro::Update()
 			App->audio->PlayFx(maximum);
 		}
 		
-		score_timer.Start(2);
+		score_timer.Start(1);
 	}
 	//Music management
 	if (music_stop.IsOver() && Mix_PausedMusic())
@@ -376,10 +378,11 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	//Ball thrower
-	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
+	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && !Mix_PausedMusic())
 	{
 		ball->body->ApplyForceToCenter(b2Vec2(0, -10000), true);
 		horsekick = true;
+		App->audio->PlayFx(horse_sound);
 	}
 	allow_throw = false;
 
@@ -571,6 +574,9 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			{
 				Reset_Big_Game(); //Fx sound should be different from small_reset sound
 				App->audio->PlayFx(you_lose);
+				App->audio->PlayFx(lose_melody);
+				Mix_PauseMusic();
+				music_stop.Start(4);
 			}
 		}
 	}
