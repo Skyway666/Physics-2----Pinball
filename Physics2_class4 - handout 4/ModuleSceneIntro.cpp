@@ -404,12 +404,12 @@ update_status ModuleSceneIntro::Update()
 	}
 
 	//Pallets controller
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		Lflipper->body->ApplyAngularImpulse(-190, true);
 	else
 		Lflipper->body->ApplyAngularImpulse(1, true);
 
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{ 
 		Rflipper->body->ApplyAngularImpulse(190, true);
 	    Sflipper->body->ApplyAngularImpulse(190, true);
@@ -429,6 +429,7 @@ update_status ModuleSceneIntro::Update()
 	}
 	allow_throw = false;
 
+	//Impulse helpers
 	if (allow_throw2)
 		ball->body->ApplyForceToCenter(b2Vec2(-1000, -1000), true);
 	allow_throw2 = false;
@@ -436,9 +437,8 @@ update_status ModuleSceneIntro::Update()
 		ball->body->ApplyForceToCenter(b2Vec2(-100, -100), true);
 	allow_throw3 = false;
 
-	// Prepare for raycast ------------------------------------------------------
-	//Blit everything
 
+	//Blit everything
 	App->renderer->Blit(background, 0, 0, 1.66);
 
 	if (!barrels_timer.IsOver())
@@ -451,6 +451,7 @@ update_status ModuleSceneIntro::Update()
 		App->renderer->Blit(sprites, 729, 327, 1.66, &sombrero);
 	if (!sombrero_timer2.IsOver())
 		App->renderer->Blit(sprites, 828, 283, 1.66, &sombrero);
+
     //Blit multiplication management
 	if(score_mult >= 2)
 		App->renderer->Blit(sprites, 561, 842, 1.66, &x2);
@@ -675,7 +676,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			else if (bodyA->type == 4)
 				sombrero_timer2.Start(0.2);
 		}
-		if (bodyA->type == 2 || bodyA->type == 6)
+		if (bodyA->type == 2 || bodyA->type == 6) //Barrels
 		{
 			App->audio->PlayFx(boing);
 			actual_score += 500;
@@ -685,7 +686,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			else if (bodyA->type == 6)
 				barrels_timer1.Start(0.2);
 		}
-		if (bodyA->type == 3)
+		if (bodyA->type == 3) //Cowboys
 		{
 			App->audio->PlayFx(paw);
 			bodyA->alive = false;
