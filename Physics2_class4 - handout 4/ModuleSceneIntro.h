@@ -143,7 +143,12 @@ public:
 	uint paw;
 	uint lose_sound;
 	uint kill_cowboys;
-	uint multiply;
+	uint level_1;
+	uint level_2;
+	uint level_3;
+	uint level_4;
+	uint maximum;
+	uint you_lose;
 	timer music_stop;
 
 	p2Point<int> ray;
