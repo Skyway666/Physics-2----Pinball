@@ -340,7 +340,7 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(background, 0, 0, 1.66);
 
 	if (idkk)
-		App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
+		//App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
 	
 	App->renderer->Blit(sprites, 632, 761, 1.66, &x4);
 	App->renderer->Blit(sprites, 561, 842, 1.66, &x4);
@@ -407,14 +407,13 @@ update_status ModuleSceneIntro::Update()
 	
 	ball->GetPosition(x, y, true);
 	App->renderer->Blit(ball_sprite,x,y, 0.7);
+	App->renderer->Blit(front, 0, 0, 1.66);
 	Rflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Rflipper->GetRotation() + 30);
 	Sflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Sflipper->GetRotation() + 30);
 	Lflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x - 5, y - 40, 0.55, (SDL_Rect*)0, 1, Lflipper->GetRotation() - 30, true);
-
-	App->renderer->Blit(front, 0, 0, 1.66);
 
 	return UPDATE_CONTINUE;
 }
