@@ -492,7 +492,7 @@ update_status ModuleSceneIntro::Update()
 	if (actual_score > 9999999999)
 		actual_score = 9999999999;
 
-	sprintf_s(score_text, 20, "%d", actual_score);
+	sprintf_s(score_text, 20, "%d", (actual_score + total_score));
 	sprintf_s(balls_text, 5, "%d", lives);
 	App->fonts->BlitText(335 - strlen(score_text) * App->fonts->char_width * 3, 864, 0, score_text);
 	App->fonts->BlitText(365, 864, 0, balls_text);
