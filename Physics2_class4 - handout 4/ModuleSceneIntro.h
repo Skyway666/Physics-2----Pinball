@@ -8,7 +8,7 @@ class PhysBody;
 class timer
 {
 public:
-	void Start(int amount_of_time) //Amount of time in seconds
+	void Start(float amount_of_time) //Amount of time in seconds
 	{
 		timer_duration = SDL_GetTicks() + amount_of_time * 1000;
 		timer_active = true;
@@ -73,8 +73,8 @@ public:
 	PhysBody* Sflipper; //type -1,body
 	//Bouncers
 	PhysBody* bouncer1; //type 1, body
-	PhysBody* bouncer2; //type 1, body
-	PhysBody* bouncer3; //type 1, body
+	PhysBody* bouncer2; //type 3, body
+	PhysBody* bouncer3; //type 4, body
 	//Barrells
 	PhysBody* barrels_1; //type 2, body
 	PhysBody* barrels_2; //type 2, body
@@ -101,6 +101,11 @@ public:
 	int lives;
 	timer score_timer;
 	timer score_timer_barrow;
+	timer sombrero_timer;
+	timer sombrero_timer1;
+	timer sombrero_timer2;
+	timer barrels_timer;
+	timer barrels_timer1;
 	int font_score = -1;
 	char score_text[20];
 	char balls_text[5];
@@ -113,6 +118,7 @@ public:
 	bool erase = false;
 	bool horsekick = false;
 	bool ball_interaction = false;
+	bool sombrero1_hit = false;
 	// Integers
 	int horse_counter = 0;
 	// Textures
@@ -149,6 +155,8 @@ public:
 	SDL_Rect x4 { 111, 0, 37, 27 };
 	SDL_Rect x8 { 148, 0, 37, 27 };
 	SDL_Rect x2 { 185, 0, 37, 27 };
+	SDL_Rect barrels1 { 217, 86, 104, 97 };
+	SDL_Rect barrels2 { 195, 276, 107, 93 };
 
 	SDL_Texture* ball_sprite;
 	SDL_Texture* flipper_sprite;

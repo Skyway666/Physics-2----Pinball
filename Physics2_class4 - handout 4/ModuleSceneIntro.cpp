@@ -173,9 +173,9 @@ bool ModuleSceneIntro::Start()
 	rail = App->physics->CreateChain(0, 0, Rail, 32, b2_staticBody, -1);
 
 	//Set up bouncers
-	bouncer1 = App->physics->CreateCircle(760, 279, 20, b2_staticBody,1);
-	bouncer2 = App->physics->CreateCircle(767, 362, 20, b2_staticBody, 1);
-	bouncer3 = App->physics->CreateCircle(867, 320, 20, b2_staticBody, 1);
+	bouncer1 = App->physics->CreateCircle(760, 279, 20, b2_staticBody, 1);
+	bouncer2 = App->physics->CreateCircle(767, 362, 20, b2_staticBody, 3);
+	bouncer3 = App->physics->CreateCircle(867, 320, 20, b2_staticBody, 4);
 
 	//Set up barrels
 	int Barrels_1[32] = {
@@ -208,7 +208,7 @@ bool ModuleSceneIntro::Start()
 		758,753
 	};
 
-	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 2, false, 1.5);
+	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 6, false, 1.5);
 
 	//Set up cowboys
 	for (int i = 0; i <= 4; i++) // First row
@@ -459,7 +459,18 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(background, 0, 0, 1.66);
 
 	if (idkk)
-		//App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
+		App->renderer->Blit(sprites, idk2, idk, 1.66, &barrels2);
+
+	if (!barrels_timer.IsOver())
+		App->renderer->Blit(sprites, 261, 624, 1.66, &barrels1);
+	if (!barrels_timer1.IsOver())
+		App->renderer->Blit(sprites, 734, 631, 1.66, &barrels2);
+	if (!sombrero_timer.IsOver())
+		App->renderer->Blit(sprites, 721, 255, 1.66, &sombrero);
+	if (!sombrero_timer1.IsOver())
+		App->renderer->Blit(sprites, 729, 327, 1.66, &sombrero);
+	if (!sombrero_timer2.IsOver())
+		App->renderer->Blit(sprites, 828, 283, 1.66, &sombrero);
     //Blit multiplication management
 	if(score_mult >= 2)
 		App->renderer->Blit(sprites, 561, 842, 1.66, &x2);
@@ -471,8 +482,8 @@ update_status ModuleSceneIntro::Update()
 	    App->renderer->Blit(sprites, 482, 760, 1.66, &x8);
 	if(score_mult >= 10)
 		App->renderer->Blit(sprites, 372, 596, 1.66, &x10);
-
-    //App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+		App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
 
 	if (!bonus_sensorL->alive)
 	{
@@ -660,7 +671,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	}
 	else                                          //Body management
 	{
-		if (bodyA->type == 1) //bouncer
+		if (bodyA->type == 1 || bodyA->type == 3 || bodyA->type == 4) // bouncers
 		{
 			iPoint ball_position;
 			iPoint bouncer_position;
@@ -676,11 +687,23 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
             App->audio->PlayFx(bonus_fx);
 			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);
 			actual_score += 1000;
+
+			if (bodyA->type == 1)
+				sombrero_timer.Start(0.2);
+			else if (bodyA->type == 3)
+				sombrero_timer1.Start(0.2);
+			else if (bodyA->type == 4)
+				sombrero_timer2.Start(0.2);
 		}
-		if (bodyA->type == 2)
+		if (bodyA->type == 2 || bodyA->type == 6)
 		{
 			App->audio->PlayFx(boing);
 			actual_score += 500;
+
+			if (bodyA->type == 2)
+				barrels_timer.Start(0.2);
+			else if (bodyA->type == 6)
+				barrels_timer1.Start(0.2);
 		}
 		if (bodyA->type == 3)
 		{
