@@ -87,7 +87,22 @@ bool ModuleSceneIntro::Start()
 		1190, 740,
 		1200, 482,
 		1190, 740,
-		1200, 482,
+		1200, 482
+	};
+
+	int Railing[4] = {
+		150, 524,
+		277, 456
+	};
+
+	int Barrow[4] = {
+		322, 498,
+		277, 456
+	};
+
+	int Barrow1[4] = {
+		348, 425,
+		375, 471
 	};
 
 	for (int i = 0; i != 8; i++)
@@ -96,6 +111,12 @@ bool ModuleSceneIntro::Start()
 	}
 
 	pinball = App->physics->CreateChain(0, 0, Pinball_box, 50, b2_staticBody, -1);
+
+	railing = App->physics->CreateChain(0, 0, Railing, 4, b2_staticBody, -1, true);
+
+	barrow = App->physics->CreateChain(0, 0, Barrow, 4, b2_staticBody, -1, true);
+
+	barrow1 = App->physics->CreateChain(0, 0, Barrow1, 4, b2_staticBody, -1, true);
 	
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
@@ -210,6 +231,10 @@ bool ModuleSceneIntro::Start()
 	ball_throw2 = App->physics->CreateRectangleSensor(1100, 230, 100, 20, 1);
 	ball_throw2->listener = this;
 	ball_throw2->alive = true;
+
+	ball_throw3 = App->physics->CreateRectangleSensor(1100, 230, 100, 20, 1);
+	ball_throw3->listener = this;
+	ball_throw3->alive = true;
 
 	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 2);
 	wall_sensor->listener = this;

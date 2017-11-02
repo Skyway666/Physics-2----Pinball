@@ -58,6 +58,9 @@ public:
 	//Activable walls
 	PhysBody* wall1;     //type -1, body
 	PhysBody* wall2;     //type -1, body
+	PhysBody* railing;     //type -1, body
+	PhysBody* barrow;     //type -1, body
+	PhysBody* barrow1;     //type -1, body
 	//Obstacles
 	PhysBody* obstacle1; //type -1, body
 	PhysBody* obstacle2; //type -1, body
@@ -80,6 +83,7 @@ public:
 	PhysBody* ball_throw; //type 0, sensor
 	PhysBody* ball_throw1; //type 1, sensor
 	PhysBody* ball_throw2; //type 1, sensor
+	PhysBody* ball_throw3; //type 1, sensor
 	PhysBody* wall_sensor; //type 2, sensor
 	PhysBody* bonus_sensorL;//type 3,sensor
 	PhysBody* bonus_sensorC;//type 3,sensor
