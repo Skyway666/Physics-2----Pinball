@@ -282,8 +282,7 @@ bool ModuleSceneIntro::Start()
 	cowboys_killed = false;
 
 	Reset_Big_Game();
-	sprintf_s(score_text, 20, "SCORE!");
-	sprintf_s(balls_text, 5, "B");
+
 	return ret;
 }
 
@@ -490,6 +489,11 @@ update_status ModuleSceneIntro::Update()
 	    
 	}
 
+	if (actual_score > 9999999999)
+		actual_score = 9999999999;
+
+	sprintf_s(score_text, 20, "%d", actual_score);
+	sprintf_s(balls_text, 5, "%d", lives);
 	App->fonts->BlitText(335 - strlen(score_text) * App->fonts->char_width * 3, 864, 0, score_text);
 	App->fonts->BlitText(365, 864, 0, balls_text);
 
@@ -569,7 +573,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			if (score_timer_barrow.IsOver())
 			{
 				App->audio->PlayFx(amazing);
-				actual_score += 100;
+				actual_score += 10000;
 				score_timer_barrow.Start(3);
 			}
 		}
@@ -619,18 +623,18 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
             App->audio->PlayFx(bonus_fx);
 			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);
-			actual_score += 10;
+			actual_score += 1000;
 		}
 		if (bodyA->type == 2)
 		{
 			App->audio->PlayFx(boing);
-			actual_score+= 5;
+			actual_score += 500;
 		}
 		if (bodyA->type == 3)
 		{
 			App->audio->PlayFx(paw);
 			bodyA->alive = false;
-			actual_score += 15;
+			actual_score += 1500;
 		}
 	}
 
