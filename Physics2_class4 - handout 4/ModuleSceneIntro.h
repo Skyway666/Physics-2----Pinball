@@ -89,6 +89,7 @@ public:
 	PhysBody* bonus_sensorC;//type 3,sensor
 	PhysBody* bonus_sensorR;//type 3,sensor
 	PhysBody* end_game; //type 4, sensor
+	PhysBody* ball_throw4; //type 5, sensor
     //Score controlling variables
 	int score_mult;
 	int total_score;
@@ -101,6 +102,7 @@ public:
 	// Bools
 	bool allow_throw;
 	bool allow_throw2;
+	bool allow_throw3;
 	bool wall_collision;
 	bool cowboys_killed;
 	bool erase = false;

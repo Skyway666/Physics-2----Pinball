@@ -234,9 +234,17 @@ bool ModuleSceneIntro::Start()
 	ball_throw2->listener = this;
 	ball_throw2->alive = true;
 
-	ball_throw3 = App->physics->CreateRectangleSensor(1100, 230, 100, 20, 1);
+	ball_throw3 = App->physics->CreateRectangleSensor(340, 480, 20, 20, 1);
 	ball_throw3->listener = this;
 	ball_throw3->alive = true;
+
+	ball_throw4 = App->physics->CreateRectangleSensor(285, 425, 20, 20, 5);
+	ball_throw4->listener = this;
+	ball_throw4->alive = true;
+
+	ball_throw4 = App->physics->CreateRectangleSensor(317, 452, 20, 20, 1);
+	ball_throw4->listener = this;
+	ball_throw4->alive = true;
 
 	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 2);
 	wall_sensor->listener = this;
@@ -389,6 +397,9 @@ update_status ModuleSceneIntro::Update()
 	if (allow_throw2)
 		ball->body->ApplyForceToCenter(b2Vec2(-1000, -1000), true);
 	allow_throw2 = false;
+	if (allow_throw3)
+		ball->body->ApplyForceToCenter(b2Vec2(-100, -100), true);
+	allow_throw3 = false;
 	// Prepare for raycast ------------------------------------------------------
 
 
@@ -547,9 +558,13 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			allow_throw = true;
 			wall_collision = false;
 		}
-		if (bodyA->type == 1)  // Ball throwing position
+		else if (bodyA->type == 1)  // Ball throwing position
 		{
 			allow_throw2 = true;
+		}
+		else if (bodyA->type == 5)  // Ball throwing position
+		{
+			allow_throw3 = true;
 		}
 		else if (bodyA->type == 2) //Temporal barrier
 		{
