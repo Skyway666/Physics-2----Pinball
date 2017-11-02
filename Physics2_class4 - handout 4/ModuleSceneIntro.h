@@ -92,14 +92,21 @@ public:
 	int font_score = -1;
 	char score_text[20];
 	char balls_text[5];
-	//Bools
+	// Bools
 	bool allow_throw;
 	bool wall_collision;
 	bool cowboys_killed;
 	bool erase = false;
+	bool horsekick = false;
+	// Integers
+	int horse_counter = 0;
 	// Textures
 	SDL_Texture* background;
 	SDL_Texture* sprites;
+	SDL_Texture* front;
+	int idk = 500;
+	int idk2 = 500;
+	bool idkk = true;
 
 	// Sprites:
 

@@ -34,6 +34,7 @@ bool ModuleSceneIntro::Start()
 	multiply = App->audio->LoadFx("pinball/multiply.wav");
 
 	background = App->textures->Load("pinball/background.png");
+	front = App->textures->Load("pinball/front.png");
 	sprites = App->textures->Load("pinball/sprites.png");
 	ball_sprite = App->textures->Load("pinball/wheel.png");
 	flipper_sprite = App->textures->Load("pinball/flipper.png");
@@ -232,6 +233,7 @@ bool ModuleSceneIntro::CleanUp()
 {
 	LOG("Unloading Intro scene");
 	App->textures->Unload(background);
+	App->textures->Unload(front);
 	App->textures->Unload(sprites);
 	App->textures->Unload(ball_sprite);
 	App->textures->Unload(flipper_sprite);
@@ -290,8 +292,6 @@ update_status ModuleSceneIntro::Update()
 		wall_collision = true;
 	}
 
-
-
 	//Pallets controller
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
 		Lflipper->body->ApplyAngularImpulse(-190, true);
@@ -313,13 +313,44 @@ update_status ModuleSceneIntro::Update()
 	if (allow_throw && App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN)
 	{
 		ball->body->ApplyForceToCenter(b2Vec2(0, -10000), true);
+		horsekick = true;
 	}
 	allow_throw = false;
 	// Prepare for raycast ------------------------------------------------------
 
 
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		idk++;
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
+		idk--;
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
+		idk2--;
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		idk2++;
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+	{
+		if (idkk)
+			idkk = false;
+		else
+			idkk = true;
+	}
+
 	//Blit everything
+
 	App->renderer->Blit(background, 0, 0, 1.66);
+
+	if (idkk)
+		App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
+	
+	App->renderer->Blit(sprites, 632, 761, 1.66, &x4);
+	App->renderer->Blit(sprites, 561, 842, 1.66, &x4);
+	App->renderer->Blit(sprites, 559, 778, 1.66, &x4);
+	App->renderer->Blit(sprites, 482, 760, 1.66, &x6);
+	App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
+	App->renderer->Blit(sprites, 372, 596, 1.66, &x10);
+	App->renderer->Blit(sprites, 906, 223, 1.66, &flag3);
+	App->renderer->Blit(sprites, 828, 201, 1.66, &flag2);
+	App->renderer->Blit(sprites, 743, 187, 1.66, &flag1);
 
 	if (cowboys[10]->alive)
 		App->renderer->Blit(sprites, 589, 271, 1.66, &N);
@@ -361,6 +392,17 @@ update_status ModuleSceneIntro::Update()
 	App->fonts->BlitText(335 - strlen(score_text) * App->fonts->char_width * 3, 864, 0, score_text);
 	App->fonts->BlitText(365, 864, 0, balls_text);
 
+	if (horsekick && horse_counter != 30)
+	{
+		App->renderer->Blit(sprites, 1100, 737, 1.66, &horse);
+		horse_counter++;
+	}
+	else
+	{
+		horse_counter = 0;
+		horsekick = false;
+	}
+
 	int x, y;
 	
 	ball->GetPosition(x, y, true);
@@ -371,6 +413,8 @@ update_status ModuleSceneIntro::Update()
 	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Sflipper->GetRotation() + 30);
 	Lflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x - 5, y - 40, 0.55, (SDL_Rect*)0, 1, Lflipper->GetRotation() - 30, true);
+
+	App->renderer->Blit(front, 0, 0, 1.66);
 
 	return UPDATE_CONTINUE;
 }
