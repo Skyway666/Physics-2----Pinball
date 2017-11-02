@@ -65,10 +65,9 @@ bool ModuleSceneIntro::Start()
 		750, 856,
 	};
 
-	int Pinball_box1[16] = {
+	int Pinball_box1[14] = {
 		1190, 740,
 		1190, 700,
-		1300,650,
 		1200, 482,
 		1170, 310,
 		1130, 200,
@@ -147,7 +146,7 @@ bool ModuleSceneIntro::Start()
 
 	pinball = App->physics->CreateChain(0, 0, Pinball_box, 22, b2_staticBody, -1, true);
 
-	pinball1 = App->physics->CreateChain(0, 0, Pinball_box1, 16, b2_staticBody, -1, true);
+	pinball1 = App->physics->CreateChain(0, 0, Pinball_box1, 14, b2_staticBody, -1, true);
 
 	pinball2 = App->physics->CreateChain(0, 0, Pinball_box2, 10, b2_staticBody, -1, true);
 
@@ -166,8 +165,6 @@ bool ModuleSceneIntro::Start()
 	Sflipper = App->physics->CreateRectangle(1000, 529, 180, 35, b2_dynamicBody, -1);
 
 	wall1 = App->physics->CreateChain(0, 0, Wall1, 8, b2_staticBody,-1, true);
-
-	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, true);
 
 	obstacle1 = App->physics->CreateRectangle(839, 218, 8, 35, b2_staticBody, -1);
 
@@ -350,12 +347,10 @@ update_status ModuleSceneIntro::Update()
 	if (wall_collision && ball_interaction)
 	{
 		wall1->body->SetActive(true);
-		wall2->body->SetActive(false);
 	}
 	else
 	{
 		wall1->body->SetActive(false);
-		wall2->body->SetActive(true);
 	}
     //Cowboys management
 	for (int i = 0; i < 11; i++) 

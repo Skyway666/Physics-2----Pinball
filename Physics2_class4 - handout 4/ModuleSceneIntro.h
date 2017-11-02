@@ -60,7 +60,6 @@ public:
 	PhysBody* pinball3; //type -1, body
 	//Activable walls
 	PhysBody* wall1;     //type -1, body
-	PhysBody* wall2;     //type -1, body
 	PhysBody* railing;   //type -1, body
 	PhysBody* barrow;    //type -1, body
 	PhysBody* barrow1;   //type -1, body
