@@ -78,11 +78,13 @@ public:
 	PhysBody* cowboys[11]; //type 3, body
 	//Pinball sensors
 	PhysBody* ball_throw; //type 0, sensor
-	PhysBody* wall_sensor; //type 1, sensor
-	PhysBody* bonus_sensorL;//type 2,sensor
-	PhysBody* bonus_sensorC;//type 2,sensor
-	PhysBody* bonus_sensorR;//type 2,sensor
-	PhysBody* end_game; //type 3, sensor
+	PhysBody* ball_throw1; //type 1, sensor
+	PhysBody* ball_throw2; //type 1, sensor
+	PhysBody* wall_sensor; //type 2, sensor
+	PhysBody* bonus_sensorL;//type 3,sensor
+	PhysBody* bonus_sensorC;//type 3,sensor
+	PhysBody* bonus_sensorR;//type 3,sensor
+	PhysBody* end_game; //type 4, sensor
     //Score controlling variables
 	int score_mult;
 	int total_score;
@@ -94,6 +96,7 @@ public:
 	char balls_text[5];
 	// Bools
 	bool allow_throw;
+	bool allow_throw2;
 	bool wall_collision;
 	bool cowboys_killed;
 	bool erase = false;

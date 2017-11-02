@@ -12,6 +12,7 @@ ModuleSceneIntro::ModuleSceneIntro(Application* app, bool start_enabled) : Modul
 {
 	ray_on = false;
 	allow_throw = false;
+	allow_throw2 = false;
 }
 
 ModuleSceneIntro::~ModuleSceneIntro()
@@ -90,7 +91,7 @@ bool ModuleSceneIntro::Start()
 	}
 
 	pinball = App->physics->CreateChain(0, 0, Pinball_box, 50, b2_staticBody, -1);
-
+	
 	Lflipper = App->physics->CreateRectangle(170 * 2.5, (352 * 2.5), 180, 35,b2_dynamicBody,-1);
 
 	Rflipper = App->physics->CreateRectangle(300 * 2.5, (352 * 2.5), 180, 35, b2_dynamicBody ,-1);
@@ -101,9 +102,9 @@ bool ModuleSceneIntro::Start()
 
 	wall2 = App->physics->CreateChain(0, 0, Wall2, 8, b2_staticBody, -1, true);
 
-	obstacle1 = App->physics->CreateRectangle(838, 219, 10, 35, b2_staticBody, -1);
+	obstacle1 = App->physics->CreateRectangle(839, 218, 8, 35, b2_staticBody, -1);
 
-	obstacle2 = App->physics->CreateRectangle(910, 237, 10, 35, b2_staticBody, -1);
+	obstacle2 = App->physics->CreateRectangle(911, 231, 8, 35, b2_staticBody, -1);
 
 	//Set up bouncers
 	bouncer1 = App->physics->CreateCircle(760, 279, 25, b2_staticBody,1);
@@ -111,18 +112,27 @@ bool ModuleSceneIntro::Start()
 	bouncer3 = App->physics->CreateCircle(867, 320, 25, b2_staticBody, 1);
 
 	//Set up barrels
-	int Barrels_1[14] = {
-		276,647,
-		326,641, 
-		381,634,
-		391,681,
-		425,705,
-		420,764,
-		275,696
+	int Barrels_1[32] = {
+		275, 647,
+		286, 636,
+		314, 635,
+		330, 647,
+		350, 631,
+		377, 636,
+		388, 671,
+		389, 695,
+		421, 698,
+		425, 754,
+		414, 771,
+		382, 771,
+		368, 745,
+		336, 746,
+		318, 714,
+		280, 705
 
 	};
 
-	barrels_1 = App->physics->CreateChain(0, 0, Barrels_1, 14, b2_staticBody, 2, false, 2);
+	barrels_1 = App->physics->CreateChain(0, 0, Barrels_1, 32, b2_staticBody, 2, false, 1.5);
 
 	int Barrels_2[10] = {
 		756, 698,
@@ -132,7 +142,7 @@ bool ModuleSceneIntro::Start()
 		758,753
 	};
 
-	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 2, false, 2);
+	barrels_2 = App->physics->CreateChain(0, 0, Barrels_2, 10, b2_staticBody, 2, false, 1.5);
 
 	//Set up cowboys
 	for (int i = 0; i <= 4; i++) // First row
@@ -188,28 +198,36 @@ bool ModuleSceneIntro::Start()
 	ball_throw->listener = this;
 	ball_throw->alive = true;
 
-	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 1);
+	ball_throw1 = App->physics->CreateRectangleSensor(1060, 190, 20, 100, 1);
+	ball_throw1->listener = this;
+	ball_throw1->alive = true;
+
+	ball_throw2 = App->physics->CreateRectangleSensor(1100, 230, 100, 20, 1);
+	ball_throw2->listener = this;
+	ball_throw2->alive = true;
+
+	wall_sensor = App->physics->CreateRectangleSensor(400 * 2.5, (30 * 2.5), 10, 300, 2);
 	wall_sensor->listener = this;
 	wall_sensor->alive = true;
 
-	bonus_sensorL = App->physics->CreateRectangleSensor(815, 204, 30, 25, 2);
+	bonus_sensorL = App->physics->CreateRectangleSensor(815, 204, 30, 25, 3);
 	bonus_sensorL->listener = this;
 	bonus_sensorL->alive = true;
 
-	bonus_sensorC = App->physics->CreateRectangleSensor(881, 224, 30, 25, 2);
+	bonus_sensorC = App->physics->CreateRectangleSensor(881, 224, 30, 25, 3);
 	bonus_sensorC->listener = this;
 	bonus_sensorC->alive = true;
 
-	bonus_sensorR = App->physics->CreateRectangleSensor(949, 250, 30, 25, 2);
+	bonus_sensorR = App->physics->CreateRectangleSensor(949, 250, 30, 25, 3);
 	bonus_sensorR->listener = this;
 	bonus_sensorR->alive = true;
 
-	end_game = App->physics->CreateRectangleSensor(561, 1000, 1000, 25, 3);
+	end_game = App->physics->CreateRectangleSensor(561, 1000, 1000, 25, 4);
 	end_game->listener = this;
 	end_game->alive = true;
 
 	//Set up first ball
-	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true);
+	ball = App->physics->CreateCircle(1164, 633, 18, b2_dynamicBody,0, true, 0.5);
 	ball->listener = this;
 
 	//Set up score variables
@@ -316,6 +334,10 @@ update_status ModuleSceneIntro::Update()
 		horsekick = true;
 	}
 	allow_throw = false;
+
+	if (allow_throw2)
+		ball->body->ApplyForceToCenter(b2Vec2(-1000, -1000), true);
+	allow_throw2 = false;
 	// Prepare for raycast ------------------------------------------------------
 
 
@@ -342,8 +364,8 @@ update_status ModuleSceneIntro::Update()
 	if (idkk)
 		//App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
 	
-	App->renderer->Blit(sprites, 632, 761, 1.66, &x4);
-	App->renderer->Blit(sprites, 561, 842, 1.66, &x4);
+	App->renderer->Blit(sprites, 632, 761, 1.66, &x8);
+	App->renderer->Blit(sprites, 561, 842, 1.66, &x2);
 	App->renderer->Blit(sprites, 559, 778, 1.66, &x4);
 	App->renderer->Blit(sprites, 482, 760, 1.66, &x6);
 	App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
@@ -453,21 +475,25 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	//App->audio->PlayFx(bonus_fx);
 	if (bodyA->body->GetFixtureList()->IsSensor()) //Sensors management
 	{
-		if (bodyA->type == 0)  //Ball throwing position
+		if (bodyA->type == 0)  // Ball throwing position
 		{
 			allow_throw = true;
 			wall_collision = false;
 		}
-		if (bodyA->type == 1) //Temporal barrier
+		if (bodyA->type == 1)  // Ball throwing position
+		{
+			allow_throw2 = true;
+		}
+		else if (bodyA->type == 2) //Temporal barrier
 		{
 			wall_collision = true;
 		}
-		if (bodyA->type == 2) //Score bust
+		else if (bodyA->type == 3) //Score bust
 		{
 			if(score_timer.IsOver())
 			bodyA->alive = false;
 		}
-		if (bodyA->type == 3) //Ball death
+		else if (bodyA->type == 4) //Ball death
 		{
 			if (lives != 0)
 			{
@@ -495,8 +521,8 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 
 			b2Vec2 force((ball_position.x - bouncer_position.x), (ball_position.y - bouncer_position.y));
 			float32 Length = sqrt(pow(force.x, 2) + pow(force.y, 2));
-			force.x = (force.x / Length) * 200;
-			force.y = (force.y / Length) * 200;
+			force.x = (force.x / Length) * 125;
+			force.y = (force.y / Length) * 125;
 
             App->audio->PlayFx(bonus_fx);
 			bodyB->body->ApplyLinearImpulse(force,b2Vec2(0,0), true);

@@ -44,7 +44,7 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	PhysBody* CreateCircle(int x, int y, int radius,b2BodyType btype, int type, bool bullet = false);
+	PhysBody* CreateCircle(int x, int y, int radius,b2BodyType btype, int type, bool bullet = false, float restitution = 0.1);
 	PhysBody* CreateRectangle(int x, int y, int width, int height,b2BodyType btype, int type);
 	PhysBody* CreateRectangleSensor(int x, int y, int width, int height, int type);
 	PhysBody* CreateChain(int x, int y, int* points, int size, b2BodyType btype,int type, bool open_chain = false, float restitution = 0);
