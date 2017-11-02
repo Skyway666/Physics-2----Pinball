@@ -32,7 +32,12 @@ bool ModuleSceneIntro::Start()
 	paw = App->audio->LoadFx("pinball/paw.wav");
 	lose_sound = App->audio->LoadFx("pinball/lose.wav");
 	kill_cowboys = App->audio->LoadFx("pinball/kill_cowboys.wav");
-	multiply = App->audio->LoadFx("pinball/multiply.wav");
+	level_1 = App->audio->LoadFx("pinball/level_1.wav");
+	level_2 = App->audio->LoadFx("pinball/level_2.wav");
+	level_3 = App->audio->LoadFx("pinball/level_3.wav");
+	level_4 = App->audio->LoadFx("pinball/level_4.wav");
+	maximum = App->audio->LoadFx("pinball/maximum.wav");
+	you_lose = App->audio->LoadFx("pinball/you_lose.wav");
 
 	background = App->textures->Load("pinball/background.png");
 	front = App->textures->Load("pinball/front.png");
@@ -290,10 +295,28 @@ update_status ModuleSceneIntro::Update()
 		bonus_sensorC->alive = true;
 		bonus_sensorR->alive = true;
 		if (score_mult == 1)
+		{ 
 			score_mult++;
+			App->audio->PlayFx(level_1);
+		}
 		else if (score_mult != 10)
+		{ 
 			score_mult += 2;
-		App->audio->PlayFx(multiply);
+
+			if(score_mult == 4)
+			App->audio->PlayFx(level_2);
+			if (score_mult == 6)
+			App->audio->PlayFx(level_3);
+			if (score_mult == 8)
+			App->audio->PlayFx(level_4);
+			if(score_mult == 10)
+			App->audio->PlayFx(maximum);
+		}
+		else
+		{
+			App->audio->PlayFx(maximum);
+		}
+		
 		score_timer.Start(2);
 	}
 	//Music management
@@ -363,16 +386,32 @@ update_status ModuleSceneIntro::Update()
 
 	if (idkk)
 		//App->renderer->Blit(sprites, idk2, idk, 1.66, &x4);
-	
-	App->renderer->Blit(sprites, 632, 761, 1.66, &x8);
-	App->renderer->Blit(sprites, 561, 842, 1.66, &x2);
-	App->renderer->Blit(sprites, 559, 778, 1.66, &x4);
-	App->renderer->Blit(sprites, 482, 760, 1.66, &x6);
-	App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
-	App->renderer->Blit(sprites, 372, 596, 1.66, &x10);
-	App->renderer->Blit(sprites, 906, 223, 1.66, &flag3);
-	App->renderer->Blit(sprites, 828, 201, 1.66, &flag2);
-	App->renderer->Blit(sprites, 743, 187, 1.66, &flag1);
+    //Blit multiplication management
+	if(score_mult >= 2)
+		App->renderer->Blit(sprites, 561, 842, 1.66, &x2);
+	if (score_mult >= 4)
+		App->renderer->Blit(sprites, 559, 778, 1.66, &x4);
+	if(score_mult >= 6)
+	    App->renderer->Blit(sprites, 632, 761, 1.66, &x6);
+	if(score_mult >= 8)
+	    App->renderer->Blit(sprites, 482, 760, 1.66, &x8);
+	if(score_mult >= 10)
+		App->renderer->Blit(sprites, 372, 596, 1.66, &x10);
+
+    //App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
+
+	if (!bonus_sensorL->alive)
+	{
+		App->renderer->Blit(sprites, 743, 187, 1.66, &flag1);
+	}
+	if (!bonus_sensorC->alive)
+	{
+		App->renderer->Blit(sprites, 828, 201, 1.66, &flag2);
+	}
+	if (!bonus_sensorR->alive)
+	{
+		App->renderer->Blit(sprites, 906, 223, 1.66, &flag3);
+	}
 
 	if (cowboys[10]->alive)
 		App->renderer->Blit(sprites, 589, 271, 1.66, &N);
@@ -506,6 +545,7 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 			else
 			{
 				Reset_Big_Game(); //Fx sound should be different from small_reset sound
+				App->audio->PlayFx(you_lose);
 			}
 		}
 	}
