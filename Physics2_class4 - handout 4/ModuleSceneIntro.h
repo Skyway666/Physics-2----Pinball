@@ -96,6 +96,7 @@ public:
 	int actual_score;
 	int lives;
 	timer score_timer;
+	timer score_timer_barrow;
 	int font_score = -1;
 	char score_text[20];
 	char balls_text[5];
@@ -160,6 +161,8 @@ public:
 	uint horse_sound;
 	uint you_lose;
 	uint lose_melody;
+	uint amazing;
+
 	timer music_stop;
 
 	p2Point<int> ray;

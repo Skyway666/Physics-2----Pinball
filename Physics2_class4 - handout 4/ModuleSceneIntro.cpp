@@ -40,6 +40,7 @@ bool ModuleSceneIntro::Start()
 	you_lose = App->audio->LoadFx("pinball/you_lose.wav");
 	horse_sound =  App->audio->LoadFx("pinball/horse.wav");
 	lose_melody = App->audio->LoadFx("pinball/lose_melody.wav");
+	amazing = App->audio->LoadFx("pinball/amazing.wav");
 
 	background = App->textures->Load("pinball/background.png");
 	front = App->textures->Load("pinball/front.png");
@@ -565,6 +566,12 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 		else if (bodyA->type == 5)  // Ball throwing position
 		{
 			allow_throw3 = true;
+			if (score_timer_barrow.IsOver())
+			{
+				App->audio->PlayFx(amazing);
+				actual_score += 100;
+				score_timer_barrow.Start(3);
+			}
 		}
 		else if (bodyA->type == 2) //Temporal barrier
 		{
