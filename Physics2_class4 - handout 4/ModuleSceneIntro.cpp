@@ -463,7 +463,7 @@ update_status ModuleSceneIntro::Update()
 	    App->renderer->Blit(sprites, 482, 760, 1.66, &x8);
 	if(score_mult >= 10)
 		App->renderer->Blit(sprites, 372, 596, 1.66, &x10);
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_Q) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		App->renderer->Blit(sprites, 808, 597, 1.66, &hold);
 
 	if (!bonus_sensorL->alive)
