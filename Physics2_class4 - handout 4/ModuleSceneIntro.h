@@ -55,12 +55,16 @@ public:
 
 	// Pinball board
 	PhysBody* pinball; //type -1, body
+	PhysBody* pinball1; //type -1, body
+	PhysBody* pinball2; //type -1, body
+	PhysBody* pinball3; //type -1, body
 	//Activable walls
 	PhysBody* wall1;     //type -1, body
 	PhysBody* wall2;     //type -1, body
-	PhysBody* railing;     //type -1, body
-	PhysBody* barrow;     //type -1, body
-	PhysBody* barrow1;     //type -1, body
+	PhysBody* railing;   //type -1, body
+	PhysBody* barrow;    //type -1, body
+	PhysBody* barrow1;   //type -1, body
+	PhysBody* rail;		 //type -1, body
 	//Obstacles
 	PhysBody* obstacle1; //type -1, body
 	PhysBody* obstacle2; //type -1, body
@@ -109,6 +113,7 @@ public:
 	bool cowboys_killed;
 	bool erase = false;
 	bool horsekick = false;
+	bool ball_interaction = false;
 	// Integers
 	int horse_counter = 0;
 	// Textures

@@ -51,14 +51,7 @@ bool ModuleSceneIntro::Start()
 	font_score = App->fonts->Load("pinball/Font.png", "> ?@ABCDEFGHIJKLMNOPQRSTUVWXYZ!¡?_^#$%&'()x+.-,;tpsczpc/0123456789:", 1);
 
 	// Set up pinball board
-	int Pinball_box[50] = {
-		1190, 740,
-		1190, 700,
-		1300,650,
-		1200, 482,
-		1170, 310,
-		1130, 200,
-		1030, 160,
+	int Pinball_box[22] = {
 		975, 180,
 		870, 137,
 		350, 425,
@@ -70,13 +63,33 @@ bool ModuleSceneIntro::Start()
 		425, 1200,
 		750, 1200,
 		750, 856,
+	};
+
+	int Pinball_box1[16] = {
+		1190, 740,
+		1190, 700,
+		1300,650,
+		1200, 482,
+		1170, 310,
+		1130, 200,
+		1030, 160,
+		975, 180
+	};
+
+	int Pinball_box2[10] = {
+		750, 856,
 		897, 755,
 		982, 293,
 		980, 220,
 		1036, 203,
+	};
+
+	int Pinball_box3[10] = {
+		1036, 203,
 		1115, 286,
 		1155, 463,
-		1144, 740
+		1144, 740,
+		1190, 740
 	};
 
 	int Wall1[8] = {
@@ -108,12 +121,37 @@ bool ModuleSceneIntro::Start()
 		375, 471
 	};
 
+	int Rail[32] = {
+		1131, 143,
+		990, 266,
+		957, 338,
+		972, 456,
+		1103, 600,
+		1146, 635,
+		1146, 745,
+		1191, 740,
+		1198, 600,
+		1054, 467,
+		1016, 423,
+		1035, 304,
+		1089, 234,
+		1193, 171,
+		1216, 81,
+		1076, 41
+	};
+
 	for (int i = 0; i != 8; i++)
 	{
 		Wall1[i] = Wall1[i] * 2.5;
 	}
 
-	pinball = App->physics->CreateChain(0, 0, Pinball_box, 50, b2_staticBody, -1);
+	pinball = App->physics->CreateChain(0, 0, Pinball_box, 22, b2_staticBody, -1, true);
+
+	pinball1 = App->physics->CreateChain(0, 0, Pinball_box1, 16, b2_staticBody, -1, true);
+
+	pinball2 = App->physics->CreateChain(0, 0, Pinball_box2, 10, b2_staticBody, -1, true);
+
+	pinball3 = App->physics->CreateChain(0, 0, Pinball_box3, 10, b2_staticBody, -1, true);
 
 	railing = App->physics->CreateChain(0, 0, Railing, 4, b2_staticBody, -1, true);
 
@@ -134,6 +172,8 @@ bool ModuleSceneIntro::Start()
 	obstacle1 = App->physics->CreateRectangle(839, 218, 8, 35, b2_staticBody, -1);
 
 	obstacle2 = App->physics->CreateRectangle(911, 231, 8, 35, b2_staticBody, -1);
+
+	rail = App->physics->CreateChain(0, 0, Rail, 32, b2_staticBody, -1);
 
 	//Set up bouncers
 	bouncer1 = App->physics->CreateCircle(760, 279, 20, b2_staticBody,1);
@@ -210,7 +250,7 @@ bool ModuleSceneIntro::Start()
 	second_joint.upperAngle = 30 * DEGTORAD;
 
 	third_joint.bodyA = Sflipper->body; // Flipper
-	third_joint.bodyB = pinball->body; // Box
+	third_joint.bodyB = pinball2->body; // Box
 	third_joint.collideConnected = false;
 	third_joint.localAnchorA.Set(PIXEL_TO_METERS(50), PIXEL_TO_METERS(0));
 	third_joint.localAnchorB.Set(PIXEL_TO_METERS(1000), PIXEL_TO_METERS(529));
@@ -307,7 +347,7 @@ update_status ModuleSceneIntro::Update()
 	ball->body->SetTransform(b2Vec2(ball->body->GetPosition().x, ball->body->GetPosition().y), 0);
 
 	//Wall collision change management
-	if (wall_collision)
+	if (wall_collision && ball_interaction)
 	{
 		wall1->body->SetActive(true);
 		wall2->body->SetActive(false);
@@ -512,7 +552,8 @@ update_status ModuleSceneIntro::Update()
 	
 	ball->GetPosition(x, y, true);
 	App->renderer->Blit(ball_sprite,x,y, 0.7);
-	App->renderer->Blit(front, 0, 0, 1.66);
+	if (ball_interaction)
+		App->renderer->Blit(front, 0, 0, 1.66);
 	Rflipper->GetPosition(x, y, true);
 	App->renderer->Blit(flipper_sprite, x + 5, y - 40, 0.55, (SDL_Rect*)0, 1, Rflipper->GetRotation() + 30);
 	Sflipper->GetPosition(x, y, true);
@@ -524,7 +565,11 @@ update_status ModuleSceneIntro::Update()
 }
 void ModuleSceneIntro::Reset_Small_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
+	ball_interaction = false;
+	rail->body->SetActive(true);
+	pinball1->body->SetActive(false);
+	pinball3->body->SetActive(false);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1166), PIXEL_TO_METERS(140)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	total_score = total_score + actual_score * score_mult;
 	actual_score = 0;
@@ -534,7 +579,11 @@ void ModuleSceneIntro::Reset_Small_Game()
 
 void ModuleSceneIntro::Reset_Big_Game()
 {
-	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1250), PIXEL_TO_METERS(580)), 0);
+	ball_interaction = false;
+	rail->body->SetActive(true);
+	pinball1->body->SetActive(false);
+	pinball3->body->SetActive(false);
+	ball->body->SetTransform(b2Vec2(PIXEL_TO_METERS(1166), PIXEL_TO_METERS(140)), 0);
 	ball->body->SetLinearVelocity(b2Vec2(0, 0));
 	if (hi_score < total_score)
 		hi_score = total_score;
@@ -564,6 +613,10 @@ void ModuleSceneIntro::OnCollision(PhysBody* bodyA, PhysBody* bodyB)
 	{
 		if (bodyA->type == 0)  // Ball throwing position
 		{
+			ball_interaction = true;
+			pinball1->body->SetActive(true);
+			pinball3->body->SetActive(true);
+			rail->body->SetActive(false);
 			allow_throw = true;
 			wall_collision = false;
 		}
