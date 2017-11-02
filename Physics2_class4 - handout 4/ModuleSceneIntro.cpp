@@ -547,6 +547,7 @@ void ModuleSceneIntro::Reset_Big_Game()
 		}
 		cowboys_killed = false;
 	}
+	score_mult = 1;
 	lives = 5;
 }
 
