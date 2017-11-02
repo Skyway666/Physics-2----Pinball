@@ -125,9 +125,6 @@ public:
 	SDL_Texture* background;
 	SDL_Texture* sprites;
 	SDL_Texture* front;
-	int idk = 500;
-	int idk2 = 500;
-	bool idkk = true;
 
 	// Sprites:
 

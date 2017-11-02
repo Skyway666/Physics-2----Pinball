@@ -435,31 +435,11 @@ update_status ModuleSceneIntro::Update()
 	if (allow_throw3)
 		ball->body->ApplyForceToCenter(b2Vec2(-100, -100), true);
 	allow_throw3 = false;
+
 	// Prepare for raycast ------------------------------------------------------
-
-
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
-		idk++;
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_REPEAT)
-		idk--;
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		idk2--;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
-		idk2++;
-	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
-	{
-		if (idkk)
-			idkk = false;
-		else
-			idkk = true;
-	}
-
 	//Blit everything
 
 	App->renderer->Blit(background, 0, 0, 1.66);
-
-	if (idkk)
-		App->renderer->Blit(sprites, idk2, idk, 1.66, &barrels2);
 
 	if (!barrels_timer.IsOver())
 		App->renderer->Blit(sprites, 261, 624, 1.66, &barrels1);
